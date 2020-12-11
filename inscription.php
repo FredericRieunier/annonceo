@@ -4,6 +4,7 @@
 
 <?php
 
+/* Si l'utilisateur est connecté et modifie ses données */
 if(userConnect()){
     if(isset($_GET['action']) && $_GET['action'] == 'modification'){
         // Pré-saisie du formulaire en cas de modification des données personnelles
@@ -27,6 +28,71 @@ if(userConnect()){
 
         // Requête de modification dans la BDD
         
+
+        if($_POST){
+
+            foreach($_POST as $indice => $valeur){
+                $_POST[$indice] = htmlentities(addslashes($valeur));
+            }
+        
+            extract($_POST);
+        
+            
+                // Vérification de conformité des données
+            if( 
+            empty($pseudo) || empty($mdp) || empty($nom) || empty($prenom) || empty($telephone) || empty($email) || empty($civilite) 
+            || strlen($pseudo) > 20 || strlen($nom) > 20 || strlen($prenom) > 20 || strlen($mdp) > 60 || strlen($email) > 50 
+            || !(preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email))
+            || !(preg_match("#^0[1-68]([-. ]?[0-9]{2}){4}$#", $telephone))
+            ){
+                $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux formats suivants&nbsp;: 
+                    <ul>
+                    <li>le pseudo, le nom et le prénom ne doiventt pas comporter plus de 20 caractères</li>
+                    <li>le mot de passe ne doit pas comporter plus de 60 caractères</li>
+                    <li>le mail ne doit pas comporter plus de 50 caractères</li>
+                    <li>le format du mail doit être correct (par exemple&nbsp;: prenom@hebergeur.fr ou pseudo@site.com)</li>
+                    <li>le numéro de téléphone doit correspondre au format en vigueur en France, ses paires de nombres peuvent être jointes, séparées par des espaces, des tirets ou des points et le numéro ne doit pas comporter de lettres</li>
+                    </ul>
+                    </div>";
+            }
+            // MODIFICATION
+            elseif( empty($error) ){
+                // On crypte le mot de passe
+                $mdp = password_hash($mdp, PASSWORD_DEFAULT);
+        
+               $id_membre = $_SESSION['membre']['id_membre'];
+               $pdostatement = prepare_requete(" UPDATE membre SET 
+               pseudo = :pseudo,
+               mdp = :mdp,
+               nom = :nom,
+               prenom = :prenom,
+               telephone = :telephone,
+               email = :email,
+               civilite = :civilite
+               WHERE id_membre = '$id_membre'
+                ");
+        
+        
+               $pdostatement->bindValue(':pseudo', $pseudo, PDO::PARAM_STR);
+               $pdostatement->bindValue(':mdp', $mdp, PDO::PARAM_STR);
+               $pdostatement->bindValue(':nom', $nom, PDO::PARAM_STR);
+               $pdostatement->bindValue(':prenom', $prenom, PDO::PARAM_STR);
+               $pdostatement->bindValue(':telephone', $telephone, PDO::PARAM_STR);
+               $pdostatement->bindValue(':email', $email, PDO::PARAM_STR);
+               $pdostatement->bindValue(':civilite', $civilite, PDO::PARAM_STR);
+        
+               $pdostatement->execute();
+        
+               $content .= '<div class="alert alert-success">Modification validée.
+                            </div>';
+                header('location:profil.php');
+        
+            }
+        
+        }
+
+
+        // Fin de requête de modification
     }
     else{
     header('location:profil.php');
@@ -34,7 +100,8 @@ if(userConnect()){
     }
 }
 
-if($_POST){
+/* Si l'utilisateur n'est pas connecté */
+elseif($_POST){
 
     foreach($_POST as $indice => $valeur){
         $_POST[$indice] = htmlentities(addslashes($valeur));

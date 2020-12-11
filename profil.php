@@ -12,7 +12,6 @@ if(adminConnect()){
 }
 
 extract($_SESSION['membre']);
-debug($id_membre);
 
 $content .= "<h2>Vos informations personnelles</h2>
         <p><strong>Pseudo&nbsp;:</strong> $pseudo</p>
@@ -21,7 +20,6 @@ $content .= "<h2>Vos informations personnelles</h2>
         <p><strong>Téléphone&nbsp;: </strong> $telephone</p>
         <p><strong>E-mail&nbsp;: </strong> $email</p>
         <p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
-
 
 ?>
 
@@ -37,10 +35,8 @@ $content .= "<h2>Vos informations personnelles</h2>
         <?= $error; ?>
         <?= $content; ?>
         
-      <form action="inscription.php?action=modification&id_membre= <?= $id_membre; ?> ">
-        <input type="submit" value="Modifier" class="btn btn-secondary">
-      </form>  
-      <a href="inscription.php?action=modification">Lien</a>
+      
+        <a href="inscription.php?action=modification"><input type="submit" value="Modifier" class="btn btn-secondary"></a>
 
 
 
