@@ -56,10 +56,10 @@ function adminConnect(){
 function civilite(){
     if(userConnect()){
         if($_SESSION['membre']['civilite'] == 'm'){
-            return 'masculin';
+            return 'homme';
         }
         else{
-            return 'féminin';
+            return 'femme';
         }
     }
 }

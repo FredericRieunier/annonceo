@@ -11,6 +11,16 @@ if(adminConnect()){
     $content .= '<h2 style="color: darkred;">Administrateur</h2>';
 }
 
+// Pour être sûr que les infos affichées dans le profil soient à jour (en cas de modification du profil), on réactualise la session.
+$id_membre = $_SESSION['membre']['id_membre'];
+$r = execute_requete(" SELECT * FROM membre WHERE id_membre = '$id_membre' ");
+$membre = $r->fetch(PDO::FETCH_ASSOC);
+foreach( $membre as $index => $valeur ){
+
+    $_SESSION['membre'][$index] = $valeur;
+}
+
+
 extract($_SESSION['membre']);
 
 $content .= "<h2>Vos informations personnelles</h2>
