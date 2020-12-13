@@ -63,3 +63,17 @@ function civilite(){
         }
     }
 }
+
+// Rendre un champ facultatif lors d'une insertion en base de données
+function champ_facultatif($champ){
+    if(empty($champ)){
+        $champ = '';
+    }
+}
+
+// Copier une photo si elle est présente dans le formulaire (à ne pas utiliser pour la photo 1, qui est obligatoire)
+function copy_photo($photo, $destination){
+    if( !empty($photo) ){
+        copy($photo, $destination);
+    }
+}
