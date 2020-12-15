@@ -77,3 +77,8 @@ function copy_photo($photo, $destination){
         copy($photo, $destination);
     }
 }
+
+// Supprimer un fichier de photo
+function delete_photo_file($path_photo_to_delete, $photo_to_delete){
+    $path_photo_to_delete = str_replace( 'http://localhost', $_SERVER['DOCUMENT_ROOT'], $photo_to_delete );
+}
