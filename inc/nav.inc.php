@@ -47,8 +47,8 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_annonces.php">Gestion des annonces</a>
-          <a class="dropdown-item" href="<?= URL ?>admin/gestion_membre.php">Gestion membres</a>
-          <a class="dropdown-item" href="<?= URL ?>admin/gestion_commande.php">Gestion commandes</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_membres.php">Gestion des membres</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_categories.php">Gestion des catégories</a>
         </div> 
 
       <?php endif; ?>

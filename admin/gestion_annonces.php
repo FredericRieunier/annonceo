@@ -14,7 +14,7 @@ if(!adminConnect() && !userConnect()){
 
 if( adminConnect() ){
 
-    // Supression
+    // SUPPRESSION
 
     if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
         //S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'suppression'
@@ -84,55 +84,53 @@ if( adminConnect() ){
     }
 
 
-
-    // Insertion éventuelle par l'admin et modification;
+    /*  AFFICHAGE DES SELECT (pour la modif comme pour l'insertion) */
+    
     // On récupère l'id de l'auteur de l'annonce avec une requête pour pouvoir le prés-sélectionner dans le select en cas de modification
-    $pdostatement = execute_requete(" SELECT membre_id_membre FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
-    $id_auteur_annonce_modifiee = $pdostatement->fetch(PDO::FETCH_ASSOC);
-    $id_auteur_annonce_modifiee = $id_auteur_annonce_modifiee['membre_id_membre'];
+    if( isset($_GET['action']) && $_GET['action'] == 'modification' ){
+        $pdostatement = execute_requete(" SELECT membre_id_membre FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
+        $id_auteur_annonce_modifiee = $pdostatement->fetch(PDO::FETCH_ASSOC);
+        $id_auteur_annonce_modifiee = $id_auteur_annonce_modifiee['membre_id_membre'];
 
-    // On fait de même pour la catégorie
-    $pdostatement = execute_requete(" SELECT categorie_id_categorie FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
-    $id_categorie_annonce_modifiee = $pdostatement->fetch(PDO::FETCH_ASSOC);
-    $id_categorie_annonce_modifiee = $id_categorie_annonce_modifiee['categorie_id_categorie'];
+        // On fait de même pour la catégorie
+        $pdostatement = execute_requete(" SELECT categorie_id_categorie FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
+        $id_categorie_annonce_modifiee = $pdostatement->fetch(PDO::FETCH_ASSOC);
+        $id_categorie_annonce_modifiee = $id_categorie_annonce_modifiee['categorie_id_categorie'];
+    }
     
 
     // Affichage dans le select du membre auteur de l'annonce de son id et de son pseudo
     $pdostatement = execute_requete(" SELECT id_membre, pseudo FROM membre ");
-        /* $pdostatement->bindValue(':id_membre', $id_membre, PDO::PARAM_STR);
-        $pdostatement->bindValue(':pseudo', $pseudo, PDO::PARAM_STR);             
-        $pdostatement->execute(); */
-        // J'avais commencé à faire une requête préparée (en pensant qu'il était toujours mieux de procéder ainsi), mais j'ai finalement compris que comme je n'avais pas de variable utilisateur ici, il suffisait d'exécuter directement la requête.
-
-        // On initialise la liste des membres qui s'affichera dans un select
-        $list_id_membre = '';
+    
+    // On initialise la liste des membres qui s'affichera dans un select
+    $list_id_membre = '';
         
 
-        while( $id_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
+    while( $id_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
+        
+        $list_id_membre .= "<option value='";
+        foreach($id_en_bdd as $indice => $valeur){
             
-            $list_id_membre .= "<option value='";
-            foreach($id_en_bdd as $indice => $valeur){
-                
-                if($indice == 'id_membre'){
-                    if($valeur == $id_auteur_annonce_modifiee){
-                        $list_id_membre .= $valeur . "' selected>";
-                        $list_id_membre .= $valeur . ' - ';
-                    }
-
-                    else{
-                    $list_id_membre .= $valeur . "'>";
+            if($indice == 'id_membre'){
+                if($_GET['action'] == 'modification' && $valeur == $id_auteur_annonce_modifiee){
+                    $list_id_membre .= $valeur . "' selected>";
                     $list_id_membre .= $valeur . ' - ';
-                    }
-                }
-                else{
-                    $list_id_membre .= $valeur;
                 }
 
+                else{
+                $list_id_membre .= $valeur . "'>";
+                $list_id_membre .= $valeur . ' - ';
+                }
+            }
+            else{
+                $list_id_membre .= $valeur;
             }
 
-            $list_id_membre .= "</option>";
-
         }
+
+        $list_id_membre .= "</option>";
+
+    }
 
     // Affichage dans le select de la catégorie de l'annonce de son id et de son titre
     $pdostatement = execute_requete(" SELECT id_categorie, titre FROM categorie ");
@@ -143,7 +141,7 @@ if( adminConnect() ){
             
             foreach($id_categorie_en_bdd as $indice => $valeur){
                 if($indice == 'id_categorie'){
-                    if($valeur == $id_categorie_annonce_modifiee){
+                    if($_GET['action'] == 'modification' && $valeur == $id_categorie_annonce_modifiee){
                         $list_id_categorie .= $valeur . "' selected>";
                         $list_id_categorie .= $valeur . ' - ';
                     }
@@ -163,29 +161,11 @@ if( adminConnect() ){
         }
 
     
-    // MODIFICATION
-    if( isset($_GET['action']) && $_GET['action'] == 'modification' ){ //S'il il y a une 'action' dans l'URL ET que cette action est égale à 'modification', alors on effectue une requête de modification :
-
-		/* execute_requete(" UPDATE produit SET 	reference = '$_POST[reference]',
-												categorie = '$_POST[categorie]',
-												titre = '$_POST[titre]',
-												description = '$_POST[description]',
-												couleur = '$_POST[couleur]',
-												taille = '$_POST[taille]',
-												sexe = '$_POST[sexe]',
-												photo = '$photo_bdd',
-												prix = '$_POST[prix]',
-												stock = '$_POST[stock]'
-							WHERE id_produit = '$_GET[id_produit]'
-					 ");
-
-		//redirection vers l'affichage :
-		header('location:?action=affichage'); */
-
-	}
     
-    // INSERTION Si l'admin a rempli le formulaire
-    elseif( !empty($_POST) && empty($error) ){
+    
+    
+        // Si l'admin a rempli le formulaire (modification ou insertion)
+    if( !empty($_POST) ){
 
         // Sécurisation des données envoyées
         foreach($_POST as $key => $value){
@@ -193,24 +173,64 @@ if( adminConnect() ){
         }
         extract($_POST);
 
+        // Vérification de conformité des données
+        if( !empty($_FILES['photo1']['name']) && !empty($titre) && !empty($prix) 
+        && strlen($titre) <= 255 && strlen($description_courte) <= 255 && strlen($prix) <= 11 && strlen($pays) <= 20 && strlen($ville) <= 20 && strlen($adresse) <= 50
+        && ( preg_match("#^[0-9]{5}$#", $cp) || empty($cp) )
+        && preg_match("#^[0-9]{1,11}$#", $prix)
+        ){
 
-        /*INSERTION ou MODIFICATION: */
-        
-        // On fait d'abord l'insertion dans la table photo pour pouvoir insérer l'id_photo dans la table annonce.
-        
-        // Insertion
-        if(isset($_GET['action']) && $_GET['action'] == 'ajout'){
+
+
+            // MODIFICATION
             
-            // Vérification de conformité des données
-            if( !empty($_FILES['photo1']['name']) && !empty($titre) && !empty($prix) 
-            && strlen($titre) <= 255 && strlen($description_courte) <= 255 && strlen($prix) <= 11 && strlen($pays) <= 20 && strlen($ville) <= 20 && strlen($adresse) <= 50
-            && ( preg_match("#^[0-9]{5}$#", $cp) || empty($cp) )
-            && preg_match("#^[0-9]{1,11}$#", $prix)
-            ){
+            if( isset($_GET['action']) && $_GET['action'] == 'modification' ){ //S'il y a une 'action' dans l'URL ET que cette action est égale à 'modification', alors on effectue une requête de modification :
 
+                $pdostatement = prepare_requete(" UPDATE annonce SET 	
+                titre = '$titre',
+                description_courte = '$description_courte',
+                description_longue = '$description_longue',
+                prix = '$prix',
+                photo = '$photo',
+                -- XXXXXX
+                pays = '$pays',
+                ville = '$ville',
+                adresse = '$adresse',
+                cp = '$cp'
+                WHERE id_annonce = '$_GET[id_annonce]'
+                            ");
+
+
+                            debug($cp);
+
+                $pdostatement->bindValue(':titre', $titre, PDO::PARAM_STR);
+                $pdostatement->bindValue(':description_courte', $description_courte, PDO::PARAM_STR);
+                $pdostatement->bindValue(':description_longue', $description_longue, PDO::PARAM_STR);
+                $pdostatement->bindValue(':prix', $prix, PDO::PARAM_STR);
+                $pdostatement->bindValue(':photo', $photo, PDO::PARAM_STR);
+                $pdostatement->bindValue(':pays', $pays, PDO::PARAM_STR);
+                $pdostatement->bindValue(':ville', $ville, PDO::PARAM_STR);
+                $pdostatement->bindValue(':adresse', $adresse, PDO::PARAM_STR);
+                // $pdostatement->bindValue(':cp', $cp, PDO::PARAM_STR);
+
+                $pdostatement->execute();
+                            
+
+                //redirection vers l'affichage :
+                // header('location:?action=affichage');
+
+            }
+
+            /*INSERTION  */
+                  
+            // Insertion
+            if(isset($_GET['action']) && $_GET['action'] == 'ajout'){
+        
+        
                 // Insertion des photos dans la table photo
+                // On fait d'abord l'insertion dans la table photo pour pouvoir insérer l'id_photo dans la table annonce.
 
-                // S'il y a au moins une photo chargé (en présumant que ce soit la 1), cf vérification de conformité des données ci-dessus
+                // S'il y a au moins une photo chargée (en présumant que ce soit la 1), cf vérification de conformité des données ci-dessus
             
                 // On reprend le nom de la photo
                 $nom_photo1 = $_FILES['photo1']['name'];
@@ -413,22 +433,23 @@ if( adminConnect() ){
                 header('location:?action=affichage');
                 exit();
 
-            }
-            else{
-                // Si au moins une des conditions de conformité des données n'est pas respectée, on affiche un message d'erreur général 
-                $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Merci de vérifier les points suivants.<br><br> 
-                                <ul>
-                                    <li>Il est nécessaire de saisir au moins un titre et un prix, et de charger au moins une photo. 
-                                    </li>
-                                    <li>Le prix doit être un nombre entier (sans virgule) au minimum de 1 euro et au maximum de 99 999 999 999&nbsp;euros. Il doit être saisi en chiffres, sans séparation entre les chiffres (ni espaces, ni tirets, ni barres obliques, ni points, par exemple).</li>
-                                    <li>Le code postal doit être composé exactement de 5 chiffres.</li>
-                                    <li>Le pays et la ville ne doivent pas comporter plus de 20 caractères.</li>
-                                    <li>Le titre et la description courte ne doivent pas comporter plus de 255 caractères.</li>
-                                    <li>L'adresse ne doit pas comporter plus de 50 caractères.</li>
-                                </ul>
-                    </div>";
-            }
-            
+            }    //Fin de l'insertion
+                
+        }   // Fin des conditions de conformité des données
+        
+        else{
+            // Si au moins une des conditions de conformité des données n'est pas respectée, on affiche un message d'erreur général 
+            $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Merci de vérifier les points suivants.<br><br> 
+                            <ul>
+                                <li>Il est nécessaire de saisir au moins un titre et un prix, et de charger au moins une photo. 
+                                </li>
+                                <li>Le prix doit être un nombre entier (sans virgule) au minimum de 1 euro et au maximum de 99 999 999 999&nbsp;euros. Il doit être saisi en chiffres, sans séparation entre les chiffres (ni espaces, ni tirets, ni barres obliques, ni points, par exemple).</li>
+                                <li>Le code postal doit être composé exactement de 5 chiffres.</li>
+                                <li>Le pays et la ville ne doivent pas comporter plus de 20 caractères.</li>
+                                <li>Le titre et la description courte ne doivent pas comporter plus de 255 caractères.</li>
+                                <li>L'adresse ne doit pas comporter plus de 50 caractères.</li>
+                            </ul>
+                </div>";
         }
 
     // Fin du if(!empty($_POST)) correspondant à si l'admin a rempli le formulaire :
@@ -547,9 +568,6 @@ elseif( userConnect() ){
             $add_photo3 = '';
             $add_photo4 = '';
             $add_photo5 = '';
-
-            debug($annonce_actuelle);
-
 
             if( isset( $annonce_actuelle['photo']) ){ 
                 //S'il existe $annonce_actuelle['photo'] : c'est qu'on est dans le cadre d'une modification

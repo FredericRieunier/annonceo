@@ -88,6 +88,7 @@ if(userConnect()){
                $content .= '<div class="alert alert-success">Modification validée.
                             </div>';
                 header('location:profil.php');
+                exit();
         
             }
         
@@ -154,8 +155,8 @@ else{
             // On crypte le mot de passe
             $mdp = password_hash($mdp, PASSWORD_DEFAULT);
 
-        $pdostatement = prepare_requete(" INSERT INTO membre(pseudo, mdp, nom, prenom, telephone, email, civilite)
-                                            VALUES(:pseudo, :mdp, :nom, :prenom, :telephone, :email, :civilite)
+        $pdostatement = prepare_requete(" INSERT INTO membre(pseudo, mdp, nom, prenom, telephone, email, civilite, date_enregistrement)
+                                            VALUES(:pseudo, :mdp, :nom, :prenom, :telephone, :email, :civilite, NOW())
             ");
 
 
