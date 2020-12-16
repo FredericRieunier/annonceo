@@ -302,7 +302,7 @@ if( adminConnect() ){
                 // Insertion dans la table annonce
                 // Insérer la value du select ayant pour name membre_id_membre dans la requête d'insertion
                 
-                
+                // XXXXXXX
                 $pdostatement = prepare_requete(" INSERT INTO annonce(
                                                             titre, 
                                                             description_courte, 

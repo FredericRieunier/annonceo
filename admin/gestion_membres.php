@@ -47,20 +47,10 @@ if( !empty( $_POST ) ){
 			   $pdostatement->bindValue(':statut', $_POST['statut'], PDO::PARAM_STR);
         
 			   $pdostatement->execute();
-			   
-		/* execute_requete(" UPDATE membre SET 	pseudo = '$_POST[pseudo]',
-												nom = '$_POST[nom]',
-												nom = '$_POST[nom]',
-												nom = '$_POST[nom]',
-												nom = '$_POST[nom]',
-												nom = '$_POST[nom]',
-												nom = '$_POST[nom]'
-							WHERE id_membre = '$_GET[id_membre]'
-					 "); */
 
 		//redirection vers l'affichage :
-        // header('location:?action=affichage');
-        // exit();
+        header('location:?action=affichage');
+        exit();
 
 	}
 }
@@ -100,7 +90,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="?action=modification&id_membre='. $ligne['id_membre'] .'">
+								<a href="../profil.php?action=affichage&id_membre='. $ligne['id_membre'] .'">
 									<i class="fas fa-search"></i>
 								</a>	
 							</td>';

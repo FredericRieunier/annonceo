@@ -65,18 +65,54 @@ function civilite(){
 }
 
 // Rendre un champ facultatif lors d'une insertion en base de données
-function champ_facultatif($champ){
-    if(empty($champ)){
-        $champ = '';
+// VOIR COMMENT LA FAIRE MARCHER EVENTUELLEMENT
+/* function champ_facultatif($champ_teste, $champ_cible){
+    if(!isset($champ_teste)){
+        $champ_cible = '';
     }
+} */
+
+// Gérer l'ajout d'une photo
+
+function name_photo($numero_photo){
+    //Ici, je nomme la photo :
+    return $_FILES[$numero_photo]['name'];
 }
 
-// Copier une photo si elle est présente dans le formulaire (à ne pas utiliser pour la photo 1, qui est obligatoire)
-function copy_photo($photo, $destination){
-    if( !empty($photo) ){
-        copy($photo, $destination);
-    }
+function add_photo_to_bdd($nom_photo){
+		//Chemin pour accéder à la photo (à insérer en BDD) :
+        return URL . "img/$nom_photo";
 }
+
+function copy_photo($nom_photo, $numero_photo){
+
+    if(!empty($nom_photo)){
+    //Où on place le fichier de la photo
+    $photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo;
+    
+    //Enregistrement de la photo dans le dossier 'img'
+    copy( $_FILES[$numero_photo]['tmp_name'], $photo_dossier );
+    }
+
+}
+
+// Ajouter en indice l'id à une photo 
+function add_index($nom_photo, $last_id_photo){
+		// Nom de photo avec préfixe :
+		$nom_photo = $last_id_photo . '_' . $nom_photo;
+		// Chemin local complet avec nom de photo avec préfixe
+		return DOSSIER_PHOTO_LOCAL . $nom_photo;
+}
+
+// Renommer une photo en lui ajoutant l'id en indice
+function rename_photo($nom_photo, $new_photo_bdd, $current_photo_bdd){
+    if( empty($nom_photo) ){ $new_photo_bdd = '';	}
+    else{ rename($current_photo_bdd, $new_photo_bdd); }
+
+    return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'http://localhost', $new_photo_bdd );
+}
+
+
 
 // Supprimer un fichier de photo
 function delete_photo_file($path_photo_to_delete, $photo_to_delete){

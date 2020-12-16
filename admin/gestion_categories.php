@@ -24,42 +24,58 @@ if( !empty( $_POST ) ){
 		$_POST[$key] = htmlentities( addslashes( $value ) );
 	}
 
-	
+	if( 
+	empty($_POST['titre']) || empty($_POST['motscles'])
+	|| strlen($_POST['titre']) > 255
+	){
+		$error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux formats suivants. 
+						<ul>
+							<li>Le titre ne doit pas comporter plus de 255 caractères.</li>
+						</ul>
+					</div>";
+	}
 
 	//---------------------------------------------
 	//INSERTION  ou MODIFICATION d'une catégorie :
-	if( isset($_GET['action']) && $_GET['action'] == 'modification' ){
+	elseif( empty($error) && isset($_GET['action']) && $_GET['action'] == 'modification' ){
 
 		execute_requete(" UPDATE categorie SET 	titre = '$_POST[titre]',
 												motscles = '$_POST[motscles]'
 							WHERE id_categorie = '$_GET[id_categorie]'
-					 ");
+					");
 
 		//redirection vers l'affichage :
-        header('location:?action=affichage');
-        exit();
+		header('location:?action=affichage');
+		exit();
 
 	}
 	elseif( empty( $error) ) { //SI la variable $error est vide, je fais mon insertion:
 
-		execute_requete(" INSERT INTO categorie( titre, motscles ) 
+		// On cherche si la catégorie existe déjà dans la bdd
+		$pdostatement = execute_requete(" SELECT * FROM categorie WHERE titre = '$_POST[titre]' ");
+		if($pdostatement->rowCount() >= 1){
+			$error .= "<div class='alert alert-warning'>Le titre de catégorie entré existe déjà dans la base de données.</div>";
+		}
+		else{
+			execute_requete(" INSERT INTO categorie( titre, motscles ) 
 
-						VALUES(
-								'$_POST[titre]',
-								'$_POST[motscles]'
-							)
-						");
-		//redirection vers l'affichage :
+							VALUES(
+									'$_POST[titre]',
+									'$_POST[motscles]'
+								)
+							");
+			//redirection vers l'affichage :
 
-        header('location:?action=affichage');
-        exit();
+			header('location:?action=affichage');
+			exit();
+		}
 
 	}
 }
 
 //Affichage des catégories :
 if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
-	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des categories ;
+	//S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des categories ;
 
 	//Je récupère les categories en bdd:
 	$r = execute_requete(" SELECT * FROM categorie ");
@@ -81,9 +97,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 
 		while( $ligne = $r->fetch( PDO::FETCH_ASSOC ) ){
 			$content .= '<tr>';
-				//debug( $ligne );
 
-				//EXERCICE : affichez les informations ET la photo !
 				foreach( $ligne as $indice => $valeur ){
 						$content .= "<td> $valeur </td>";
 				}
@@ -125,7 +139,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 <?php 
 if( isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification')  ) : //S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'ajout' OU à 'modification', alors on affiche le formulaire 
 
-    if( isset( $_GET['id_categorie']) ){ //S'il existe 'id_produit' dans l'URL, c'est que je suis dans le cadre d'une modification
+    if( isset( $_GET['id_categorie']) ){ //S'il existe 'id_categorie' dans l'URL, c'est que je suis dans le cadre d'une modification
 
         //récupération des infos à modifier :
         $r = execute_requete(" SELECT * FROM categorie WHERE id_categorie = '$_GET[id_categorie]' ");

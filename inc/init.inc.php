@@ -9,6 +9,9 @@ $pdo = new PDO('mysql:host=localhost;dbname=annonceo', 'root', 'root', array(  P
 // URL en constante
 define('URL', 'http://localhost/PHP/00-Annonceo_V1.0/');
 
+// 
+define ('DOSSIER_PHOTO_LOCAL', $_SERVER['DOCUMENT_ROOT'] . "/PHP/00-Annonceo_V1.0/img/" );
+
 // Variables
 $content = '';
 $error = '';
