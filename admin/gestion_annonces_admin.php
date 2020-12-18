@@ -44,7 +44,7 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
         $chemin_photo4_a_supprimer = str_replace( 'http://localhost', $_SERVER['DOCUMENT_ROOT'], $photo4_a_supprimer );
 		$chemin_photo5_a_supprimer = str_replace( 'http://localhost', $_SERVER['DOCUMENT_ROOT'], $photo5_a_supprimer );
 		
-		debug($chemin_photo1_a_supprimer);
+		// debug($chemin_photo1_a_supprimer);
 		
 
         if( !empty( $chemin_photo1_a_supprimer ) && file_exists( $chemin_photo1_a_supprimer ) ){
@@ -92,18 +92,44 @@ if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vi
 	}
 	extract($_POST);
 
+	// Vérification de conformité des données
+	if( 
+		// empty($_FILES['photo1']['name']) || 
+	empty($titre) || empty($prix) 
+	|| strlen($titre) > 255 || strlen($description_courte) > 255 || strlen($prix) > 11 || strlen($pays) > 20 || strlen($ville) > 20 || strlen($adresse) > 50
+	|| ( !preg_match("#^[0-9]{5}$#", $cp) && !empty($cp) )
+	|| !preg_match("#^[0-9]{1,11}$#", $prix)
+	){
+		// Si au moins une des conditions de conformité des données n'est pas respectée, on affiche un message d'erreur général 
+		$error .= "<div class='alert alert-warning'>Il y a eu une erreur. Merci de vérifier les points suivants.<br><br> 
+						<ul>
+							<li>Il est nécessaire de saisir au moins un titre et un prix, et de charger au moins une photo. 
+							</li>
+							<li>Le prix doit être un nombre entier (sans virgule) au minimum de 1 euro et au maximum de 99 999 999 999&nbsp;euros. Il doit être saisi en chiffres, sans séparation entre les chiffres (ni espaces, ni tirets, ni barres obliques, ni points, par exemple).</li>
+							<li>Le code postal doit être composé exactement de 5 chiffres.</li>
+							<li>Le pays et la ville ne doivent pas comporter plus de 20 caractères.</li>
+							<li>Le titre et la description courte ne doivent pas comporter plus de 255 caractères.</li>
+							<li>L'adresse ne doit pas comporter plus de 50 caractères.</li>
+						</ul>
+				</div>";
+
+	}
+
+
 	//---------------------------------------------
 	//GESTION DE LA PHOTO :
 	//debug( $_FILES );
 	//debug( $_SERVER );
 
-	if( isset( $_GET['action']) && $_GET['action'] == 'modification' ){ //SI je suis dans le cadre d'une modification, je récupère le chemin en bdd (grâce à l'input type="hidden") que je stocke dans LA variable $photo_bdd !
+	elseif( isset( $_GET['action']) && $_GET['action'] == 'modification' ){ //SI je suis dans le cadre d'une modification, je récupère le chemin en bdd (grâce à l'input type="hidden") que je stocke dans la variable $photo1_bdd !
 
 		$photo1_bdd = $_POST['photo1_actuelle'];
+		// debug($_POST);
 	}
 	//---------------------------------------------
 
 	// TRAITEMENT DES PHOTOS
+	// INSERTION DE PHOTOS
 	if( !empty( $_FILES['photo1']['name'] ) ){ //SI le nom de la photo (dans $_FILES) n'est pas vide, c'est que l'on a uploadé un fichier !
 		// On gère la copie des images et leurs chemins d'accès par des fonctions
 
@@ -130,10 +156,10 @@ if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vi
 		$photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo1;
 
 		// Si les champs de photos 2 à 5 sont vides, on réinitialise le chemin d'accès
-		if(empty($nom_photo2)){ $photo2_bdd = ''; }
-		if(empty($nom_photo3)){ $photo3_bdd = ''; }
-		if(empty($nom_photo4)){ $photo4_bdd = ''; }
-		if(empty($nom_photo5)){ $photo5_bdd = ''; }
+		// if(empty($nom_photo2)){ $photo2_bdd = ''; }
+		// if(empty($nom_photo3)){ $photo3_bdd = ''; }
+		// if(empty($nom_photo4)){ $photo4_bdd = ''; }
+		// if(empty($nom_photo5)){ $photo5_bdd = ''; }
 
 		// Insertion dans la table photo
 		$pdostatement = prepare_requete(" INSERT INTO photo(photo1, photo2, photo3, photo4, photo5) 
@@ -189,52 +215,158 @@ if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vi
 							WHERE id_photo = '$last_id_photo'
 								");
 
-		// header('location:?action=affichage');
-		// exit();
-
 	}
-	else{
+	/* elseif( isset($_GET['action']) && !$_GET['action'] == 'ajout' ){
 
 		//$photo_bdd =''; //Si pas de message d'erreur, on insèrera du 'vide'
 		$error .= '<div class="alert alert-warning">Aucun fichier n\'a été chargé.</div>';
-	}
+	} */
 
 	//---------------------------------------------
-	//INSERTION  ou MODIFICATION d'un produit :
-	if( isset($_GET['action']) && $_GET['action'] == 'modification' ){ //S'il il y a une 'action' dans l'URL ET que cette action est égale à 'modification', alors on effectue une requête de modification :
+	//INSERTION  ou MODIFICATION d'une annonce :
+	if( isset($_GET['action']) && $_GET['action'] == 'modification' ){ //S'il y a une 'action' dans l'URL ET que cette action est égale à 'modification', alors on effectue une requête de modification :
 
+		// Modification dans la table photo
+		/* Début modif table photo */
+
+		if( !empty( $_FILES['photo1']['name'] ) ){ //SI le nom de la photo (dans $_FILES) n'est pas vide, c'est que l'on a uploadé un fichier !
+			// On gère la copie des images et leurs chemins d'accès par des fonctions
+	
+			$nom_photo1 = name_photo('photo1');
+			$photo1_bdd = add_photo_to_bdd($nom_photo1);
+			copy_photo($nom_photo1, 'photo1');
+	
+			$nom_photo2 = name_photo('photo2');
+			$photo2_bdd = add_photo_to_bdd($nom_photo2);
+			copy_photo($nom_photo2, 'photo2');
+	
+			$nom_photo3 = name_photo('photo3');
+			$photo3_bdd = add_photo_to_bdd($nom_photo3);
+			copy_photo($nom_photo3, 'photo3');
+	
+			$nom_photo4 = name_photo('photo4');
+			$photo4_bdd = add_photo_to_bdd($nom_photo4);
+			copy_photo($nom_photo4, 'photo4');
+	
+			$nom_photo5 = name_photo('photo5');
+			$photo5_bdd = add_photo_to_bdd($nom_photo5);
+			copy_photo($nom_photo5, 'photo5');
+	
+			$photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo1;
+	
+			// Si les champs de photos 2 à 5 sont vides, on réinitialise le chemin d'accès
+			if(empty($nom_photo2)){ $photo2_bdd = ''; }
+			if(empty($nom_photo3)){ $photo3_bdd = ''; }
+			if(empty($nom_photo4)){ $photo4_bdd = ''; }
+			if(empty($nom_photo5)){ $photo5_bdd = ''; }
+	
+			// Insertion dans la table photo
+			$pdostatement = prepare_requete(" UPDATE photo SET
+													photo1 = :photo1,
+													photo2 = :photo2,
+													photo3 = :photo3,
+													photo4 = :photo4,
+													photo5 = :photo5
+													WHERE id_photo IN
+                            						(SELECT photo_id_photo FROM annonce WHERE id_annonce = '$_GET[id_annonce]'
+													)        
+											");
+	
+	
+			$pdostatement->bindValue(':photo1', $photo1_bdd, PDO::PARAM_STR);
+			$pdostatement->bindValue(':photo2', $photo2_bdd, PDO::PARAM_STR);
+			$pdostatement->bindValue(':photo3', $photo3_bdd, PDO::PARAM_STR);
+			$pdostatement->bindValue(':photo4', $photo4_bdd, PDO::PARAM_STR);
+			$pdostatement->bindValue(':photo5', $photo5_bdd, PDO::PARAM_STR);
+	
+			$pdostatement->execute();
+	
+			// Renommage des photos pour qu'elles aient un identifiant en préfixe correspondant à l'id_photo
+			$last_id_photo = $pdo->lastInsertId();
+	
+			// Chemin local complet (avec nom de fichier sans préfixe) :
+			$current_photo1_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo1;
+			$current_photo2_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo2;
+			$current_photo3_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo3;
+			$current_photo4_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo4;
+			$current_photo5_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo5;
+	
+			// Des fonctions dédiées ajoutent l'indice puis renomment la photo
+			$new_photo1_bdd = add_index($nom_photo1, $last_id_photo);
+			$new_photo2_bdd = add_index($nom_photo2, $last_id_photo);
+			$new_photo3_bdd = add_index($nom_photo3, $last_id_photo);
+			$new_photo4_bdd = add_index($nom_photo4, $last_id_photo);
+			$new_photo5_bdd = add_index($nom_photo5, $last_id_photo);
+	
+			$new_photo1_bdd = rename_photo($nom_photo1, $new_photo1_bdd, $current_photo1_bdd);
+			$new_photo2_bdd = rename_photo($nom_photo2, $new_photo2_bdd, $current_photo2_bdd);
+			$new_photo3_bdd = rename_photo($nom_photo3, $new_photo3_bdd, $current_photo3_bdd);
+			$new_photo4_bdd = rename_photo($nom_photo4, $new_photo4_bdd, $current_photo4_bdd);
+			$new_photo5_bdd = rename_photo($nom_photo5, $new_photo5_bdd, $current_photo5_bdd);
+			
+			// Une fois le remplacement de fichier fait, on met à jour les photos ds les tables annonce et photo
+			execute_requete(" UPDATE photo 
+								SET photo1 = '$new_photo1_bdd',
+									photo2 = '$new_photo2_bdd',
+									photo3 = '$new_photo3_bdd',
+									photo4 = '$new_photo4_bdd',
+									photo5 = '$new_photo5_bdd'
+									
+								WHERE id_photo = '$last_id_photo'
+									");
+	
+			// Ajout de la $new_photo1_bdd à la table annonce
+			$pdostatement = prepare_requete(" UPDATE annonce SET 
+												photo = '$new_photo1_bdd'
+												WHERE id_annonce = '$_GET[id_annonce]'			
+			");
+			$pdostatement->bindValue(':photo', $new_photo1_bdd, PDO::PARAM_STR);
+			$pdostatement->execute();
+
+		}
+		/* else{
+	
+			//$photo_bdd =''; //Si pas de message d'erreur, on insèrera du 'vide'
+			$error .= '<div class="alert alert-warning">Aucun fichier n\'a été chargé.</div>';
+		} */
+
+
+		/* Fin modif table photo */
+
+		
+
+		// Modification dans la table annonce
 		$pdostatement = prepare_requete(" UPDATE annonce SET 	
                 titre = '$titre',
                 description_courte = '$description_courte',
                 description_longue = '$description_longue',
                 prix = '$prix',
-                photo = '$new_photo1_bdd',
+                
                 pays = '$pays',
                 ville = '$ville',
                 adresse = '$adresse',
                 cp = '$cp'
                 WHERE id_annonce = '$_GET[id_annonce]'
-                            ");
-
-
-		debug($cp);
+							");
+							
+		
 
 		$pdostatement->bindValue(':titre', $titre, PDO::PARAM_STR);
 		$pdostatement->bindValue(':description_courte', $description_courte, PDO::PARAM_STR);
 		$pdostatement->bindValue(':description_longue', $description_longue, PDO::PARAM_STR);
 		$pdostatement->bindValue(':prix', $prix, PDO::PARAM_STR);
-		$pdostatement->bindValue(':photo', $new_photo1_bdd, PDO::PARAM_STR);
+		// $pdostatement->bindValue(':photo', $new_photo1_bdd, PDO::PARAM_STR);
 		$pdostatement->bindValue(':pays', $pays, PDO::PARAM_STR);
 		$pdostatement->bindValue(':ville', $ville, PDO::PARAM_STR);
 		$pdostatement->bindValue(':adresse', $adresse, PDO::PARAM_STR);
-		// $pdostatement->bindValue(':cp', $cp, PDO::PARAM_STR);
+		$pdostatement->bindValue(':cp', $cp, PDO::PARAM_STR);
 
 		$pdostatement->execute();
 					
 
 		//redirection vers l'affichage :
-		// header('location:?action=affichage');
-		// exit();
+		header('location:?action=affichage');
+		exit();
 
 	}
 	elseif( empty( $error) ) { //SI $error est vide, insertion dans la table annonce:
@@ -387,6 +519,8 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		//exploitation des données :
 		$annonce_actuelle = $r->fetch( PDO::FETCH_ASSOC );
 
+		// XXXX Mettre ici requête dans la table photo pour avoir les photos de l'annonce actuelle ?
+
 		
 	}
 
@@ -409,7 +543,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	$add_photo4 = '';
 	$add_photo5 = '';
 
-	if( isset( $annonce_actuelle['photo']) ){ 
+	/* if( isset( $annonce_actuelle['photo']) ){ 
 		//S'il existe $annonce_actuelle['photo'] : c'est qu'on est dans le cadre d'une modification
 		// On fait donc une requête pour ouvrir dans la table photo la ligne correspondant aux photos de l'annonce en cours de modification 
 		$pdostatement = execute_requete(" SELECT * FROM photo WHERE id_photo IN 
@@ -417,8 +551,6 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		
 		$id_photos_actuelles = $pdostatement->fetch(PDO::FETCH_ASSOC);
 		// $id_photos_actuelles = $id_photos_modifiees['id_photo'];
-
-		debug($id_photos_actuelles);
 
 		if( isset($id_photos_actuelles['photo1']) ){
 			$add_photo1 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
@@ -449,61 +581,9 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 			$add_photo5 .= "<img src='$id_photos_actuelles[photo5]' width='80' ><br><br>";
 			$add_photo5 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$id_photos_actuelles[photo5]' >";
 		}
-	}
+	} */
 
 	/* FIN AJOUT */
-
-	// Pré-remplissage du formulaire en cas de modification :
-	/* if( isset( $_GET['id_produit']) ){ //S'il existe 'id_produit' dans l'URL, c'est que je suis dans le cadre d'une modification
-
-		//récupération des infos à modifier :
-		$r = execute_requete(" SELECT * FROM produit WHERE id_produit = '$_GET[id_produit]' ");
-		//exploitation des données :
-		$article_actuel = $r->fetch( PDO::FETCH_ASSOC );
-			debug( $article_actuel );
-	}
-
-	//condition pour vérifier l'existance des variables :
-	if( isset( $article_actuel['reference']) ){
-
-		$reference = $article_actuel['reference']; //on stocke la valeur dans une variable
-	}
-	else{ //Sinon, on crée cette variable à vide.
-
-		$reference = '';
-	}
-
-	//version ternaire des conditions (même chose que la condition du dessus)
-	$categorie = ( isset($article_actuel['categorie']) ) ? $article_actuel['categorie'] : '';
-	$titre = ( isset($article_actuel['titre']) ) ? $article_actuel['titre'] : '';
-	$description = ( isset($article_actuel['description']) ) ? $article_actuel['description'] : '';
-	$couleur = ( isset($article_actuel['couleur']) ) ? $article_actuel['couleur'] : '';
-	$prix = ( isset($article_actuel['prix']) ) ? $article_actuel['prix'] : '';
-	$stock = ( isset($article_actuel['stock']) ) ? $article_actuel['stock'] : '';
-
-	//taille :
-	if( isset( $article_actuel['taille'] ) && $article_actuel['taille'] == 'S' ){ //Si la taille de $article_actuel existe (c'est que l'on est dans une modification) ET QUE cette taille est égale à S
-
-		$taille_s = 'selected'; //on stocke "selected" dans une variable
-	}else{
-
-		$taille_s = ''; //SINON, on sotcke du vide dans la variable
-	}
-
-	$taille_m = ( isset( $article_actuel['taille'] ) && $article_actuel['taille'] == 'M' ) ? 'selected': '';
-	$taille_l = ( isset( $article_actuel['taille'] ) && $article_actuel['taille'] == 'L' ) ? 'selected': '';
-	$taille_xl = ( isset( $article_actuel['taille'] ) && $article_actuel['taille'] == 'XL' ) ? 'selected': '';
-
-	//Sexe :
-	if( isset( $article_actuel['sexe']) && $article_actuel['sexe'] == 'f' ){ //modif et la valeur = 'f'
-
-		$sexe_f = 'checked';
-	}
-	else{ //ajout ou que la valeur c'est 'm'
-		$sexe_f = '';
-	}
-
-	$sexe_m = ( isset( $article_actuel['sexe']) && $article_actuel['sexe'] == 'm' ) ? 'checked' : ''; */
 
 	/*  AFFICHAGE DES SELECT (pour la modif comme pour l'insertion) */
     
@@ -605,12 +685,12 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	<input type="file" name="photo1">
 	<?= $add_photo1; ?>
 	<?php
-	debug($annonce_actuelle);
 
-		if( isset( $annonce_actuelle['photo1']) ){ //S'il existe $article_actuel['photo'] : c'est que je suis dans le cadre d'une modification
+		if( isset( $annonce_actuelle['photo']) ){ //S'il existe $article_actuel['photo'] : c'est que je suis dans le cadre d'une modification
+
 			echo "<i>Vous pouvez uploader une nouvelle photo</i>";
-			echo "<img src='$annonce_actuelle[photo1]' width='80' ><br><br>";
-			echo "<input type='hidden' class='form-control' name='photo1_actuelle' value='$annonce_actuelle[photo1]' >";
+			echo "<img src='$annonce_actuelle[photo]' width='80' ><br><br>";
+			echo "<input type='hidden' class='form-control' name='photo1_actuelle' value='$annonce_actuelle[photo]' >";
 		}
 
 	?>		

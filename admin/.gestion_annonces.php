@@ -3,7 +3,7 @@
 
 <?php
 // Restriction d'accès à la page
-if(!adminConnect() && !userConnect()){
+if(!adminConnect()){
     header('location:../index1.php');
     exit();
 }

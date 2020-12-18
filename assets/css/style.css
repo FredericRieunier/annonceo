@@ -1,0 +1,21 @@
+h1{
+    color: red;
+}
+
+.encart_annonce{
+    background-color: rgb(238, 238, 238);
+    box-shadow: 0.2rem 0.2rem 0.9rem rgba(128, 128, 128, 0.493);
+    margin-bottom: 2rem;
+}
+
+.encart_annonce img{
+    max-width: 100%;
+}
+
+/* .encart_annonce{
+    color: black;
+} */
+
+.encart_annonce:hover p{
+    text-decoration: none;
+}
