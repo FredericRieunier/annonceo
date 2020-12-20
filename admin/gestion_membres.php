@@ -121,7 +121,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 <body>
     <?php require_once "../inc/nav.inc.php"; ?>
 
-    <main class="container">
+    <!-- <main class="container"> -->
         <h1>Gestion des membres</h1>
         <a href="?action=affichage">Afficher tous les membres</a><hr>
         <?= $error; ?>

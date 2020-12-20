@@ -25,8 +25,8 @@ if( !empty( $_POST ) ){
 	}
 
 	if( 
-	empty($_POST['titre']) || empty($_POST['motscles'])
-	|| strlen($_POST['titre']) > 255
+	empty($_POST['titreCat']) || empty($_POST['motscles'])
+	|| strlen($_POST['titreCat']) > 255
 	){
 		$error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux formats suivants. 
 						<ul>
@@ -39,7 +39,7 @@ if( !empty( $_POST ) ){
 	//INSERTION  ou MODIFICATION d'une catégorie :
 	elseif( empty($error) && isset($_GET['action']) && $_GET['action'] == 'modification' ){
 
-		execute_requete(" UPDATE categorie SET 	titre = '$_POST[titre]',
+		execute_requete(" UPDATE categorie SET 	titre = '$_POST[titreCat]',
 												motscles = '$_POST[motscles]'
 							WHERE id_categorie = '$_GET[id_categorie]'
 					");
@@ -52,15 +52,15 @@ if( !empty( $_POST ) ){
 	elseif( empty( $error) ) { //SI la variable $error est vide, je fais mon insertion:
 
 		// On cherche si la catégorie existe déjà dans la bdd
-		$pdostatement = execute_requete(" SELECT * FROM categorie WHERE titre = '$_POST[titre]' ");
+		$pdostatement = execute_requete(" SELECT * FROM categorie WHERE titreCat = '$_POST[titreCat]' ");
 		if($pdostatement->rowCount() >= 1){
 			$error .= "<div class='alert alert-warning'>Le titre de catégorie entré existe déjà dans la base de données.</div>";
 		}
 		else{
-			execute_requete(" INSERT INTO categorie( titre, motscles ) 
+			execute_requete(" INSERT INTO categorie( titreCat, motscles ) 
 
 							VALUES(
-									'$_POST[titre]',
+									'$_POST[titreCat]',
 									'$_POST[motscles]'
 								)
 							");
@@ -126,7 +126,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 <body>
     <?php require_once "../inc/nav.inc.php"; ?>
 
-    <main class="container">
+    <!-- <main class="container"> -->
         <h1>Gestion des catégories</h1>
 
         <a href="?action=ajout">Ajout d'une catégorie</a><br>
@@ -149,7 +149,7 @@ if( isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 
     }
 
     //conditions pour vérifier l'existence des variables :
-    $titre = ( isset($categorie_actuelle['titre']) ) ? $categorie_actuelle['titre'] : '';
+    $titreCat = ( isset($categorie_actuelle['titreCat']) ) ? $categorie_actuelle['titreCat'] : '';
     $motscles = ( isset($categorie_actuelle['motscles']) ) ? $categorie_actuelle['motscles'] : '';
 
     
@@ -158,7 +158,7 @@ if( isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 
 
 <form method="post" enctype="multipart/form-data">
 <label>Titre de la catégorie</label><br>
-<input type="text" name="titre" class="form-control" value="<?= $titre ?>"><br>
+<input type="text" name="titreCat" class="form-control" value="<?= $titreCat ?>"><br>
 
 
 <label>Mots-clés (veillez à séparer les mots-clés ou expressions-clés par des virgules)</label><br>

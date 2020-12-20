@@ -112,9 +112,18 @@ function rename_photo($nom_photo, $new_photo_bdd, $current_photo_bdd){
     return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'http://localhost', $new_photo_bdd );
 }
 
-
-
 // Supprimer un fichier de photo
 function delete_photo_file($path_photo_to_delete, $photo_to_delete){
     $path_photo_to_delete = str_replace( 'http://localhost', $_SERVER['DOCUMENT_ROOT'], $photo_to_delete );
+}
+
+/* Index */
+// Ajouter un AND optionnel dans une requête
+function add_AND_in_request($id_champ, $nom_champ){
+    if(empty($id_champ)){
+        return '';
+      }
+      else{
+        return "AND $nom_champ = '$id_champ' ";
+      }
 }

@@ -188,7 +188,7 @@ else{
 </head>
 <body>
 <?php require_once "inc/nav.inc.php"; ?>
-    <main class="container">
+    <!-- <main class="container"> -->
 
     <h1>Inscription</h1>
     <?= $error; //affichage des message d'erreurs ?>

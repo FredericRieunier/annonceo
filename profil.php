@@ -67,7 +67,7 @@ if( !$_GET ){
 <body>
     <?php require_once "inc/nav.inc.php"; ?>
 
-    <main class="container">
+    <!-- <main class="container"> -->
         <h1>Profil</h1>
         <?= $error; ?>
         <?= $content; ?>

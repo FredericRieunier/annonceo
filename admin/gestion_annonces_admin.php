@@ -82,7 +82,7 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 
 //---------------------------------------------
 //Gestion des produits (INSERTION et MODIFICATION) :
-if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vide
+if( !empty( $_POST ) && isset($_GET['action']) && $_GET['action'] == 'ajout' ){ //SI le formulaire a été validé ET qu'il n'est pas vide
 
 	//debug( $_POST );
 
@@ -426,8 +426,8 @@ if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vi
 		$pdostatement->execute();
 
 		//redirection vers l'affichage :
-		// header('location:?action=affichage');
-		// exit();
+		header('location:?action=affichage');
+		exit();
 
 	}
 }
@@ -437,35 +437,112 @@ if( !empty( $_POST ) ){ //SI le formulaire a été validé ET qu'il n'est pas vi
 if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des annonces
 
+	// On prépare une variable qui ajoutera dans la requête l'id de la catégorie choisie en select s'il y en a une (cf la fonction add_AND_in_request dans fonction.inc.php)
+	$search_categorie = '';
+	if(isset($_POST['categorie_id_categorie'])){
+		$search_categorie = add_AND_in_request($_POST['categorie_id_categorie'], 'categorie_id_categorie');
+	}
+	// debug($search_categorie);
+
+	// On prépare dans le select les catégories :
+	$pdostatement = execute_requete(" SELECT id_categorie, titreCat FROM categorie ");
+
+	$list_id_categorie = '<option value="0"></option>';
+	while( $id_categorie_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
+		$list_id_categorie .= "<option value='";
+		
+		foreach($id_categorie_en_bdd as $indice => $valeur){
+			if($indice == 'id_categorie'){
+
+					$list_id_categorie .= $valeur . "'>";
+					$list_id_categorie .= $valeur . ' - ';
+			
+			}
+			else{
+				$list_id_categorie .= $valeur;
+			}          
+		}
+
+		$list_id_categorie .= "</option>";
+
+	}
+
+	// CONTENU DES TD SPECIFIQUES
+	/*  */
+	// On récupère les membres
+	$r = execute_requete(" SELECT id_membre, pseudo 
+						   FROM membre");
+
+	// $membres_tab = array();
+	/* while( $list_membres = $r->fetch(PDO::FETCH_ASSOC) ){
+		foreach($list_membres as $indice => $valeur){
+			array_push($membres_tab, $valeur);    
+		  }
+	} */
+	$list_membres = $r->fetch(PDO::FETCH_ASSOC);
+
+	/*  */
+
 	//On récupère les annonces en bdd:
-	$r = execute_requete(" SELECT * FROM annonce ");
+	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+	m.pseudo, c.titreCat, a.date_enregistrement 
+	FROM annonce a, membre m, categorie c
+	WHERE 1 = 1 $search_categorie 
+	AND a.membre_id_membre = m.id_membre 
+	AND a.categorie_id_categorie = c.id_categorie ");
 
 	$content .= '<h2>Liste des annonces</h2>';
 	$content .= '<p>Nombre d\'annonces dans la boutique : '. $r->rowCount() .'</p>';
+	// On affiche la liste des catégories
+	$content .= '<form action="" method="post">';
+	$content .= '<label>Catégorie</label><br>';
+	$content .= '<select name="categorie_id_categorie" id="" class="form-control">';
+	$content .= $list_id_categorie . '</select>';
+	$content .=  '<input type="submit" value="Valider">';
+	$content .= '</form><br>';
 
-	$content .= '<table border="2" cellpadding="5" >';
-		$content .= '<tr>';
+	// On affiche le tableau des annonces
+	$content .= '<table border="2" cellpadding="5" id="table_id">';
+		$content .= '<thead><tr>';
 			for( $i = 0; $i < $r->columnCount(); $i++ ){
-
 				$colonne = $r->getColumnMeta( $i );
+				// debug($colonne['name']);
+				if($colonne['name'] == 'membre_id_membre'){
+					$content .= "<th>Membre auteur</th>";
+				}
+				elseif($colonne['name'] == 'titreCat'){
+					$content .= "<th>Catégorie</th>";
+				}
+				elseif($colonne['name'] == 'photo_id_photo'){
+					$content .= "<th>ID photo</th>";
+				}
+				else{
+					
 					//debug($colonne);
-				$content .= "<th>$colonne[name]</th>";
+					$content .= "<th>$colonne[name]</th>";
+				}
 			}
-			$content .= '<th>Suppression</th>';
-			$content .= '<th>Modification</th>';
-		$content .= '</tr>';
+			$content .= '<th>Actions</th>';
+			// $content .= '<th>Modification</th>';
+		$content .= '</tr></thead>';
 
 		while( $ligne = $r->fetch( PDO::FETCH_ASSOC ) ){
-			$content .= '<tr>';
+			$content .= '<tbody><tr>';
 				//debug( $ligne );
 
 				// On affiche les informations et la photo
 				foreach( $ligne as $indice => $valeur ){
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
+					// debug($indice);
 					if( $indice == 'photo' ){ 
-
 						$content .= "<td><img src='$valeur' width='50'></td>";
 					}
+					/* elseif( $indice == 'membre_id_membre' ){ 
+						$content .= array_search(, $list_membres);
+					}	 */		
+					/* elseif( $indice == 'categorie_id_categorie' ){ 
+						$content .= $titre_categorie;
+					}	 */			
 					//Sinon, on affiche juste la valeur
 					else{ 
 
@@ -475,14 +552,12 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 				$content .= '<td class="text-center">
 								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )">
 									<i class="far fa-trash-alt"></i>
-								</a>	
-							</td>';
-				$content .= '<td class="text-center">
+								</a> 
 								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'">
 									<i class="far fa-edit"></i>
 								</a>	
 							</td>';
-			$content .= '</tr>';
+			$content .= '</tr></tbody>';
 		}
 	$content .= '</table>';
 }
@@ -498,7 +573,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 <body>
     <?php require_once "../inc/nav.inc.php"; ?>
 
-    <main class="container">
+    <!-- <main class="container"> -->
 <h1>Admin - Gestion des annonces </h1>
 
 <a href="?action=ajout">Ajout d'une annonce</a><br>
@@ -519,7 +594,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		//exploitation des données :
 		$annonce_actuelle = $r->fetch( PDO::FETCH_ASSOC );
 
-		// XXXX Mettre ici requête dans la table photo pour avoir les photos de l'annonce actuelle ?
+		
 
 		
 	}
@@ -634,7 +709,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
     }
 
     // Affichage dans le select de la catégorie de l'annonce de son id et de son titre
-    $pdostatement = execute_requete(" SELECT id_categorie, titre FROM categorie ");
+    $pdostatement = execute_requete(" SELECT id_categorie, titreCat FROM categorie ");
 
         $list_id_categorie = '';
         while( $id_categorie_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){

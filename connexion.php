@@ -52,7 +52,7 @@ if($_POST){
 <body>
 <?php require_once "inc/nav.inc.php"; ?>
 
-    <main class="container">
+    <!-- <main class="container"> -->
         <h1>Connexion</h1>
 
         <?= $content; ?>
