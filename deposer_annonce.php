@@ -1,9 +1,9 @@
-<?php require_once '../inc/header.inc.php'; ?>
+<?php require_once 'inc/header.inc.php'; ?>
 <?php
-//Restriction de l'accès à la page administrative : 
-if( !adminConnect() ){ //SI l'admin N'EST PAS connecté, on le redirige vers la page de connexion
+//Restriction de l'accès à la page 
+if( !userConnect() ){ //SI le user N'EST PAS connecté, on le redirige vers la page de connexion
 
-	header('location:../connexion.php');
+	header('location:connexion.php');
 	exit();
 }
 
@@ -11,7 +11,7 @@ if( !adminConnect() ){ //SI l'admin N'EST PAS connecté, on le redirige vers la 
 //Gestion de la SUPPRESSION :
 //debug( $_GET );
 
-if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
+/* if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
 	
 	//S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'suppression'
 
@@ -78,10 +78,10 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
         // header('location:?action=affichage');
 		// exit();
 		
-}
+} */
 
 //---------------------------------------------
-//Gestion des produits (INSERTION et MODIFICATION) :
+//Gestion des annonces (INSERTION et MODIFICATION) :
 if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification' ) ){ //SI le formulaire a été validé ET qu'il n'est pas vide
 
 	//debug( $_POST );
@@ -91,7 +91,6 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$_POST[$key] = htmlentities( addslashes( $value ) );
 	}
 	extract($_POST);
-	debug($_POST);
 
 	// Vérification de conformité des données
 	if( 
@@ -217,18 +216,18 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 								");
 
 	}
-	/* elseif( isset($_GET['action']) && !$_GET['action'] == 'ajout' ){
+	// elseif( isset($_GET['action']) && !$_GET['action'] == 'ajout' ){
 
-		//$photo_bdd =''; //Si pas de message d'erreur, on insèrera du 'vide'
-		$error .= '<div class="alert alert-warning">Aucun fichier n\'a été chargé.</div>';
-	} */
+	// 	//$photo_bdd =''; //Si pas de message d'erreur, on insèrera du 'vide'
+	// 	$error .= '<div class="alert alert-warning">Aucun fichier n\'a été chargé.</div>';
+	// }
 
 	//---------------------------------------------
 	//INSERTION  ou MODIFICATION d'une annonce :
 	if( isset($_GET['action']) && $_GET['action'] == 'modification' ){ //S'il y a une 'action' dans l'URL ET que cette action est égale à 'modification', alors on effectue une requête de modification :
 
 		// Modification dans la table photo
-		/* Début modif table photo */
+		// Début modif table photo
 
 		if( !empty( $_FILES['photo1']['name'] ) ){ //SI le nom de la photo (dans $_FILES) n'est pas vide, c'est que l'on a uploadé un fichier !
 			// On gère la copie des images et leurs chemins d'accès par des fonctions
@@ -325,16 +324,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 			$pdostatement->execute();
 
 		}
-		/* else{
-	
-			//$photo_bdd =''; //Si pas de message d'erreur, on insèrera du 'vide'
-			$error .= '<div class="alert alert-warning">Aucun fichier n\'a été chargé.</div>';
-		} */
-
-
-		/* Fin modif table photo */
-
-		
+		// Fin modif table photo		
 
 		// Modification dans la table annonce
 		$pdostatement = prepare_requete(" UPDATE annonce SET 	
@@ -348,9 +338,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
                 adresse = '$adresse',
                 cp = '$cp'
                 WHERE id_annonce = '$_GET[id_annonce]'
-							");
-							
-		
+							");		
 
 		$pdostatement->bindValue(':titre', $titre, PDO::PARAM_STR);
 		$pdostatement->bindValue(':description_courte', $description_courte, PDO::PARAM_STR);
@@ -407,10 +395,9 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 
 		// Mettre '$last_id_photo' sur la ligne suivant NOW()
 
-
 		if( empty($cp) ){
 		$cp = NULL;
-		}
+        }
 
 		$pdostatement->bindValue(':titre', $titre, PDO::PARAM_STR);
 		$pdostatement->bindValue(':description_courte', $description_courte, PDO::PARAM_STR);
@@ -421,22 +408,26 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$pdostatement->bindValue(':ville', $ville, PDO::PARAM_STR);
 		$pdostatement->bindValue(':adresse', $adresse, PDO::PARAM_STR);
 		$pdostatement->bindValue(':cp', $cp, PDO::PARAM_STR);
-		$pdostatement->bindValue(':membre_id_membre', $membre_id_membre, PDO::PARAM_STR);
+		$pdostatement->bindValue(':membre_id_membre', $_SESSION['membre']['id_membre'], PDO::PARAM_STR);
 		$pdostatement->bindValue(':categorie_id_categorie', $categorie_id_categorie, PDO::PARAM_STR);
 		$pdostatement->bindValue(':photo_id_photo', $last_id_photo, PDO::PARAM_STR);
-		$pdostatement->execute();
+        $pdostatement->execute();
+        
+        $id_last_annonce = $pdo->lastInsertId();
 
 		//redirection vers l'affichage :
-		// header('location:?action=affichage');
-		// exit();
+		header("location:fiche_annonce.php?id_annonce=$id_last_annonce");
+		exit();
 
 	}
 }
 
-//---------------------------------------------
-//Affichage de toutes les annonces :
-if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
-	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des annonces
+
+
+// XXXX
+/* if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
+    
+    // Affichage de la liste des annonces publiées par le membre
 
 	// On prépare une variable qui ajoutera dans la requête l'id de la catégorie choisie en select s'il y en a une (cf la fonction add_AND_in_request dans fonction.inc.php)
 	$search_categorie = '';
@@ -469,20 +460,11 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	}
 
 	// CONTENU DES TD SPECIFIQUES
-	/*  */
+	
 	// On récupère les membres
 	$r = execute_requete(" SELECT id_membre, pseudo 
 						   FROM membre");
-
-	// $membres_tab = array();
-	/* while( $list_membres = $r->fetch(PDO::FETCH_ASSOC) ){
-		foreach($list_membres as $indice => $valeur){
-			array_push($membres_tab, $valeur);    
-		  }
-	} */
 	$list_membres = $r->fetch(PDO::FETCH_ASSOC);
-
-	/*  */
 
 	//On récupère les annonces en bdd:
 	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
@@ -491,7 +473,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	WHERE 1 = 1 $search_categorie 
 	AND a.membre_id_membre = m.id_membre 
 	AND a.categorie_id_categorie = c.id_categorie 
-	ORDER BY a.id_annonce DESC");
+	ORDER BY a.id_annonce ");
 
 	$content .= '<h2>Liste des annonces</h2>';
 	$content .= '<p>Nombre d\'annonces dans la boutique : '. $r->rowCount() .'</p>';
@@ -535,16 +517,10 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 				// On affiche les informations et la photo
 				foreach( $ligne as $indice => $valeur ){
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
-					// debug($indice);
 					if( $indice == 'photo' ){ 
 						$content .= "<td><img src='$valeur' width='50'></td>";
 					}
-					/* elseif( $indice == 'membre_id_membre' ){ 
-						$content .= array_search(, $list_membres);
-					}	 */		
-					/* elseif( $indice == 'categorie_id_categorie' ){ 
-						$content .= $titre_categorie;
-					}	 */			
+					
 					//Sinon, on affiche juste la valeur
 					else{ 
 
@@ -562,7 +538,9 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 			$content .= '</tr></tbody>';
 		}
 	$content .= '</table>';
-}
+} */
+
+// XXXX
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
@@ -570,23 +548,19 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 
 <!-- Pour gagner du temps, je n'ai pas mis en place de balises meta SEO ailleurs que sur la page d'accueil  -->
 
-<title>Admin - Gestion des annonces | Annonceo, le meilleur des annonces en ligne</title>
+<title>Ajouter une annonce | Annonceo, le meilleur des annonces en ligne</title>
 </head>
 <body>
-    <?php require_once "../inc/nav.inc.php"; ?>
+    <?php require_once "inc/nav.inc.php"; ?>
 
     <!-- <main class="container"> -->
-<h1>Admin - Gestion des annonces </h1>
+<h1>Déposer une annonce</h1>
 
-<a href="?action=ajout">Ajout d'une annonce</a><br>
-<a href="?action=affichage">Affichage de toutes les annonces</a><hr>
 
 <?= $error; ?>
 <?= $content; ?>
 
 <?php if( isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 'modification')  ) : //S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'ajout' OU à 'modification', alors on affiche le formulaire 
-
-	/* DEBUT AJOUT */
 
 	if( isset( $_GET['id_annonce']) ){ 
 		//S'il existe 'id_annonce' dans l'URL, c'est que c'est une modification
@@ -620,49 +594,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	$add_photo4 = '';
 	$add_photo5 = '';
 
-	/* if( isset( $annonce_actuelle['photo']) ){ 
-		//S'il existe $annonce_actuelle['photo'] : c'est qu'on est dans le cadre d'une modification
-		// On fait donc une requête pour ouvrir dans la table photo la ligne correspondant aux photos de l'annonce en cours de modification 
-		$pdostatement = execute_requete(" SELECT * FROM photo WHERE id_photo IN 
-											(SELECT photo_id_photo FROM annonce WHERE id_annonce = '$_GET[id_annonce]') ");
-		
-		$id_photos_actuelles = $pdostatement->fetch(PDO::FETCH_ASSOC);
-		// $id_photos_actuelles = $id_photos_modifiees['id_photo'];
-
-		if( isset($id_photos_actuelles['photo1']) ){
-			$add_photo1 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
-			$add_photo1 .= "<img src='$annonce_actuelle[photo]' width='80' ><br><br>";
-			$add_photo1 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$annonce_actuelle[photo]' >";
-		}
-
-		if( isset($id_photos_actuelles['photo2']) ){
-			$add_photo2 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
-			$add_photo2 .= "<img src='$id_photos_actuelles[photo2]' width='80' ><br><br>";
-			$add_photo2 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$id_photos_actuelles[photo2]' >";
-		}
-
-		if( isset($id_photos_actuelles['photo3']) ){
-			$add_photo3 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
-			$add_photo3 .= "<img src='$id_photos_actuelles[photo3]' width='80' ><br><br>";
-			$add_photo3 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$id_photos_actuelles[photo3]' >";
-		}
-
-		if( isset($id_photos_actuelles['photo4']) ){
-			$add_photo4 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
-			$add_photo4 .= "<img src='$id_photos_actuelles[photo4]' width='80' ><br><br>";
-			$add_photo4 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$id_photos_actuelles[photo4]' >";
-		}
-
-		if( isset($id_photos_actuelles['photo5']) ){
-			$add_photo5 .= "<br><p style='font-style: italic;'>Vous pouvez uploader une nouvelle photo.</p>";
-			$add_photo5 .= "<img src='$id_photos_actuelles[photo5]' width='80' ><br><br>";
-			$add_photo5 .= "<input type='hidden' class='form-control' name='photo_actuelle' value='$id_photos_actuelles[photo5]' >";
-		}
-	} */
-
-	/* FIN AJOUT */
-
-	/*  AFFICHAGE DES SELECT (pour la modif comme pour l'insertion) */
+	//  AFFICHAGE DES SELECT (pour la modif comme pour l'insertion)
     
     // On récupère l'id de l'auteur de l'annonce avec une requête pour pouvoir le prés-sélectionner dans le select en cas de modification
     if( isset($_GET['action']) && $_GET['action'] == 'modification' ){
@@ -744,19 +676,15 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
         
 	<label>Titre</label><br>
 	<input type="text" name="titre" class="form-control" value="<?= $titre_value ?>"><br>
-	<!-- value="<?= $titre_value ?>" -->
 
 	<label>Description courte</label><br>
 	<input type="text" name="description_courte" class="form-control" value="<?= $description_courte_value ?>"><br>
-	<!-- value="<?= $description_courte_value ?>" -->
 
 	<label>Description longue</label><br>
 	<textarea name="description_longue" id="" cols="30" rows="10" class="form-control"><?= $description_longue_value ?></textarea><br>
-	<!-- <?= $description_longue_value ?> -->
 
 	<label>Prix</label><br>
 	<input type="text" name="prix" class="form-control" value="<?= $prix_value ?>"><br>
-	<!-- value="<?= $prix_value ?>" -->
 
 	<label>Photo 1</label><br>
 	<input type="file" name="photo1">
@@ -795,28 +723,15 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	
 	<label>Pays</label><br>
 	<input type="text" name="pays" class="form-control" value="<?= $pays_value ?>"><br>
-	<!-- value="<?= $pays_value ?>" -->
 
 	<label>Ville</label><br>
 	<input type="text" name="ville" class="form-control" value="<?= $ville_value ?>"><br>
-	<!-- value="<?= $ville_value ?>" -->
 
 	<label>Adresse</label><br>
 	<input type="text" name="adresse" class="form-control" value="<?= $adresse_value ?>"><br>
-	<!-- value="<?= $adresse_value ?>" -->
 
 	<label>Code postal</label><br>
 	<input type="text" name="cp" class="form-control" value="<?= $cp_value ?>"><br>
-	<!-- value="<?= $cp_value ?>" -->
-
-	<label>Membre auteur de l'annonce</label><br>
-	<select name="membre_id_membre" id="" class="form-control">
-
-		<?= $list_id_membre; ?>
-	
-	</select>
-	
-	<br>
 
 	<label>Catégorie de l'annonce</label><br>
 	<select name="categorie_id_categorie" id="" class="form-control">
@@ -832,4 +747,4 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	</form>
 	<?php endif; ?>
 
-<?php require_once '../inc/footer.inc.php'; ?>
+<?php require_once 'inc/footer.inc.php'; ?>

@@ -24,6 +24,9 @@ if( !empty( $_POST ) ){
 		$_POST[$key] = htmlentities( addslashes( $value ) );
 	}
 
+	// debug($_POST);
+
+	// Messages d'erreur 
 	if( 
 	empty($_POST['titreCat']) || empty($_POST['motscles'])
 	|| strlen($_POST['titreCat']) > 255
@@ -57,6 +60,7 @@ if( !empty( $_POST ) ){
 			$error .= "<div class='alert alert-warning'>Le titre de catégorie entré existe déjà dans la base de données.</div>";
 		}
 		else{
+			debug($_POST['titreCat']);
 			execute_requete(" INSERT INTO categorie( titreCat, motscles ) 
 
 							VALUES(
@@ -66,8 +70,8 @@ if( !empty( $_POST ) ){
 							");
 			//redirection vers l'affichage :
 
-			header('location:?action=affichage');
-			exit();
+			// header('location:?action=affichage');
+			// exit();
 		}
 
 	}

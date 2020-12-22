@@ -4,104 +4,55 @@
 //affichage des informations du annonce concerné :
 //debug( $_GET );
 
-if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est que l'on a choisi délibérément d'afficher la fiche d'un annonce en particulier, donc ici, je vais récupérer toutes les infos du annonce concerné
+if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est que l'on a choisi délibérément d'afficher la fiche d'une annonce en particulier, donc ici, je vais récupérer toutes les infos de l'annonce concernée
 
-	$r = execute_requete(" SELECT * FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
+		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+			m.pseudo, c.titreCat, a.date_enregistrement 
+			FROM annonce a, membre m, categorie c
+			WHERE id_annonce = '$_GET[id_annonce]'
+			AND a.membre_id_membre = m.id_membre 
+			AND a.categorie_id_categorie = c.id_categorie ");
+
+		//Pour exploiter les données :
+		$annonce = $r->fetch( PDO::FETCH_ASSOC );
+
+		extract($annonce);
+		debug($annonce);
+
+		if(empty($titre)){
+			header('location:erreur_404.php');
+			exit();
+		}
+		else{
+			$content .= "<h2><a href=''>$titreCat</a></h2>";
+			$content .= "<p><img src='$photo' width='200'></p>";
+			$content .= "<h3>$prix €</h3>";
+			if( !empty($description_longue) ){
+				$content .= "<p><strong>Description :</strong><br> $description_longue</p>";
+			}
+			elseif( !empty($description_courte) ){
+				$content .= "<p><strong>Description :</strong><br> $description_courte</p>";
+			}
+			$content .= "<p><strong>Vendeur/Vendeuse :</strong><br>$pseudo</p>";
+			$content .= "<p><strong>Adresse :</strong><br>$adresse <br>$cp $ville <br> $pays</p>";
+
+			$content .= "<p>Ajouter date de publication (faire fonction pour mettre au bon format), note du vendeur, affichage des commentaires, ajout de lightbox ou autre syst (sous réserve que l'user soit connecté : formulaire, sinon : 'se connecter pour noter, commenter, contacter' pour noter le vendeur, commenter l'annonce, bouton vert pour le contacter.</p>";
+		}
 
 }
 else{ //SINON, on le rediriger vers la page d'accueil (Si jamais on essaie de forcer l'accès à cette page via l'URL)
 
-	header('location:index1.php');
+	header('location:erreur_404.php');
 	exit();
 }
 //---------------------------------------------------
 
-//Pour exploiter les données :
-$annonce = $r->fetch( PDO::FETCH_ASSOC );
-	//debug( $annonce );
-
-$content .= '<a href="index1.php">Retour vers l\'accueil</a><br>';
-debug($annonce);
-
-/* $content .= "<a href='index1.php?categorie=$annonce[categorie]' >
-
-				Retour vers la catégorie $annonce[categorie]
-
-			</a><hr>"; */
-
-foreach( $annonce as $cle => $valeur ){
 
 
-    switch($cle){
-        case 'prix' :
-            $content .= "<p>$valeur&nbsp;€</p>";
-        break;
-
-        case 'description_longue' :
-            if(!empty($valeur )){
-            $content .= "<p><strong>Description :</strong>$valeur</p>";
-            }
-        break;
-
-        
-
-
-        case 'photo' :
-            $content .= "<p><img src='$valeur' width='200'></p>";
-        break;
-
-
-
-    }
-
-	/* if( $cle == 'photo'){ //SI l'indice est égal à "photo", on affiche une balise <img>
-
-		$content .= "<p><img src='$valeur' width='200'></p>";
-	}
-	else{ //SINON, on affiche la valeur dans des balises <p>
-
-		if( $cle != 'id_annonce' && $cle != 'photo_id_photo'){ //SI l'indice est différent de 'id_annonce', on affiche les valeurs
-
-			$content .= "<p><strong>$cle :</strong> $valeur</p>";
-		}
-	} */
-}
-
-//---------------------------------------------------------------------
-//gestion du panier :
-/* if( $annonce['stock'] > 0 ){ //si le stock est supérieur à zero 
-
-	$content .= "<p>Nombre dannonces disponibles : $annonce[stock]</p>";
-
-	$content .= '<form method="post" action="panier.php">';
-
-		$content .= "<input type='hidden' name='id_annonce' value='$annonce[id_annonce]' >";
-
-		$content .= '<label>Quantite</label>';
-		$content .= '<select name="quantite">';
-
-			for( $i = 1; $i <= $annonce['stock']; $i++ ){
-
-				$content .= "<option> $i </option>";
-			}
-
-		$content .= '</select><br><br>';
-
-		$content .= '<input type="submit" name="ajout_panier" value="Ajouter au panier" class="btn btn-secondary">';
-
-	$content .= '</form>';
-}
-else{ //SINON, on indique "rupture de stock"
-
-	$content .= '<p>Rupture de stock</p>';
-} */
-
-
-//---------------------------------------------------------------------
 ?>
 <!-- Pour gagner du temps, je n'ai pas mis en place de balises meta SEO ailleurs que sur la page d'accueil  -->
 
-<title>XXXXXX | Annonceo, le meilleur des annonces en ligne</title>
+<title><?= $annonce['titre'] . ' | ' . $titreCat ?> | Annonceo, le meilleur des annonces en ligne</title>
 </head>
 <body>
     <?php require_once "inc/nav.inc.php"; ?>

@@ -113,7 +113,7 @@ if(empty($_POST)){     //Affichage standard d'index.php
   ");
 
   while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
-    $content .= '<div><a href="">';
+    $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
       $content .= '<div class="row encart_annonce">';
         $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
           $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
