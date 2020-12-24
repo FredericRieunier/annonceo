@@ -10,29 +10,33 @@
         <a class="nav-link" href="<?= URL ?>index1.php">Accueil</a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="<?= URL ?>panier.php">Panier</a>
-      </li>
-
-      <?php if(userConnect()) : //Si l'internaute est connecté, on affiche les liens profil et déconnexion
+      <?php if(userConnect()) : //Si l'internaute est connecté, on affiche les liens profil, déposer une annonce et déconnexion
       ?>
 
-        <li class="nav-item">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Espace membre
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="nav-link" href="<?= URL ?>profil.php">Profil</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="<?= URL ?>connexion.php?action=deconnexion">Déconnexion</a>
-        </li>
+          <a class="nav-link" href="<?= URL ?>deposer_annonce.php">Déposer une annonce</a>
+        </div>
+      </li>
 
       <?php else : //Sinon, c'est qu'on n'est pas connecté, on affiche le lien inscription. ?>
 
-        <li class="nav-item">
+
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Espace membre
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="nav-link" href="<?php echo URL ?>inscription.php">Inscription</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="<?= URL ?>connexion.php">Connexion</a>
-        </li>
+        </div>
+      </li>
+
+        
 
       <?php endif; ?>
       
@@ -41,7 +45,7 @@
 
       <?php if(adminConnect()) : //Si l'admin est connecté :
       ?>
-          <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           BackOffice
         </a>
@@ -50,11 +54,18 @@
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_membres.php">Gestion des membres</a>
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_categories.php">Gestion des catégories</a>
         </div> 
+        </li> 
 
       <?php endif; ?>
        
 
-      </li> 
+      
+      <?php if( adminConnect() || userConnect() ) : //Si un admin ou un utilisateur est connecté :
+      ?>
+      <li class="nav-item">
+          <a class="nav-link" href="<?= URL ?>connexion.php?action=deconnexion">Déconnexion</a>
+      </li>
+      <?php endif; ?>
     </ul>
   </div>
 </nav>

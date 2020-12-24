@@ -122,11 +122,14 @@ if( !$_GET ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
+								<a href="deposer_annonce.php?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a> 
-								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">
+								<a href="deposer_annonce.php?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
+								</a><br>
+								<a href="fiche_annonce.php?id_annonce='. $ligne['id_annonce'] .'">
+									<i class="fas fa-search"></i>
 								</a>	
 							</td>';
 			$content .= '</tr></tbody>';
@@ -150,20 +153,7 @@ if( !$_GET ){
         <?= $content; ?>
         
       
-        <?php 
-    //   debug($id_membre);
-        if( adminConnect() && !empty($_GET) ){
-        ?>
-            <a href="admin/gestion_membres.php?action=modification&id_membre= <?= $id_membre ?>"><input type="submit" value="Modifier" class="btn btn-secondary"></a>
-        <?php
-        }
-        else{
-        ?>
-        <a href="inscription.php?action=modification"><input type="submit" value="Modifier" class="btn btn-secondary"></a>
-        
-        <?php
-        }
-        ?>
+       
 
 
 

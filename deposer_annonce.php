@@ -11,10 +11,25 @@ if( !userConnect() ){ //SI le user N'EST PAS connecté, on le redirige vers la p
 //Gestion de la SUPPRESSION :
 //debug( $_GET );
 
-/* if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
+if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
 	
 	//S'il existe une 'action' dans l'URL ET que cette 'action' est égale à 'suppression'
 
+	// Si l'annonce du get n'a pas été déposée par le membre, on le redirige
+	
+
+	$r = execute_requete(" SELECT * FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
+		//exploitation des données :
+		$annonce_actuelle = $r->fetch( PDO::FETCH_ASSOC );
+
+		debug($annonce_actuelle);
+
+		if($annonce_actuelle['membre_id_membre'] != $_SESSION['membre']['id_membre']){
+			echo 'Non mais !';
+			header('location:erreur_404.php');
+			exit();
+		}
+		
         //récupération de la colonne 'photo' dans la table 'annonces' à condition que l'id_annonce correponde à l'id passée dans l'URL
         $r = execute_requete(" SELECT photo_id_photo FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
         $id_photo_a_supprimer = $r->fetch(PDO::FETCH_ASSOC);
@@ -75,10 +90,10 @@ if( !userConnect() ){ //SI le user N'EST PAS connecté, on le redirige vers la p
         //Suppression dans la table 'annonce' A CONDITION que l'id produit corresponde à l'id_annonce que l'on récupère dans l'URL
         execute_requete(" DELETE FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
 
-        // header('location:?action=affichage');
-		// exit();
+        header('location:profil.php');
+		exit();
 		
-} */
+}
 
 //---------------------------------------------
 //Gestion des annonces (INSERTION et MODIFICATION) :
@@ -570,6 +585,12 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		//exploitation des données :
 		$annonce_actuelle = $r->fetch( PDO::FETCH_ASSOC );
 
+		
+
+		if($annonce_actuelle['membre_id_membre'] != $_SESSION['membre']['id_membre']){
+			header('location:profil.php');
+			exit();
+		}
 		
 
 		

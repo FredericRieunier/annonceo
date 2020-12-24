@@ -557,6 +557,9 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 								</a> 
 								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'">
 									<i class="far fa-edit"></i>
+								</a><br>
+								<a href="../fiche_annonce.php?id_annonce='. $ligne['id_annonce'] .'">
+									<i class="fas fa-search"></i>
 								</a>	
 							</td>';
 			$content .= '</tr></tbody>';
