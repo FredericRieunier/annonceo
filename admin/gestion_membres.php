@@ -34,7 +34,7 @@ if( !empty( $_POST ) ){
                email = :email,
                civilite = :civilite,
 			   statut = :statut
-               WHERE id_membre = '$id_membre'
+               WHERE id_membre = '$_GET[id_membre]'
                 ");
         
         
@@ -53,6 +53,10 @@ if( !empty( $_POST ) ){
         exit();
 
 	}
+}
+
+if( !isset($_GET['action']) && empty($_POST) ){
+	header('location:?action=affichage');
 }
 
 //Affichage des membres :
@@ -90,17 +94,17 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="../profil.php?action=affichage&id_membre='. $ligne['id_membre'] .'">
+								<a href="../profil.php?action=affichage&id_membre='. $ligne['id_membre'] .'" title="Afficher">
 									<i class="fas fa-search"></i>
 								</a>	
 							</td>';
 				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_membre='. $ligne['id_membre'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )">
+								<a href="?action=suppression&id_membre='. $ligne['id_membre'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a>	
 							</td>';
 				$content .= '<td class="text-center">
-								<a href="?action=modification&id_membre='. $ligne['id_membre'] .'">
+								<a href="?action=modification&id_membre='. $ligne['id_membre'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
 								</a>	
 							</td>';

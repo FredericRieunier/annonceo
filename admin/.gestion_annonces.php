@@ -493,7 +493,7 @@ if( adminConnect() ){
                         //Sinon, on affiche juste la valeur
                         else{ 
 
-                            $content .= "<td> $valeur </td>";
+                            $content .= "<td>" . ucfirst($valeur) . 'mon cul' . "</td>";
                         }
                     }
                     $content .= '<td class="text-center">

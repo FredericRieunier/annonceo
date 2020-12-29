@@ -18,29 +18,36 @@ if(userConnect()){
 // Connexion
 if($_POST){
     extract($_POST);
-    
-    // On compare le pseudo posté et celui en bdd
-    $r = execute_requete(" SELECT * FROM membre WHERE pseudo = '$pseudo' ");
 
-    if($r->rowCount() >= 1){
-        $membre = $r->fetch(PDO::FETCH_ASSOC);
+    debug($_POST);
 
-        if(password_verify($mdp, $membre['mdp'])){
-            $content .= '<div class="alert alert-success">Vous êtes connecté.</div>';
-            foreach( $membre as $index => $valeur ){
-
-				$_SESSION['membre'][$index] = $valeur;
-            }
-            
-            // redirection vers la page de profil
-            header('location:profil.php');
-        }
-        else{
-            $error .= '<div class="alert alert-danger">Le mot de passe ne correspond pas au pseudo saisi.</div>';
-        }
+    if( stristr($_POST['pseudo'], '\'') || stristr($_POST['pseudo'], '\"') || stristr($_POST['mdp'], '\'') || stristr($_POST['mdp'], '\"') || stristr($_POST['pseudo'], '\\') || stristr($_POST['mdp'], '\\') ){
+        $error .= '<div class="alert alert-danger">Les champs pseudo et mot de passe ne peuvent pas recevoir d\'apostrophes, de barres obliques inversées ou de guillemets.</div>';
     }
     else{
-        $error .= '<div class="alert alert-danger">Ce pseudo n\'existe pas.</div>';
+        // On compare le pseudo posté et celui en bdd
+        $r = execute_requete(" SELECT * FROM membre WHERE pseudo = '$pseudo' ");
+
+        if($r->rowCount() >= 1){
+            $membre = $r->fetch(PDO::FETCH_ASSOC);
+
+            if(password_verify($mdp, $membre['mdp'])){
+                $content .= '<div class="alert alert-success">Vous êtes connecté.</div>';
+                foreach( $membre as $index => $valeur ){
+
+                    $_SESSION['membre'][$index] = $valeur;
+                }
+                
+                // redirection vers la page de profil
+                header('location:profil.php');
+            }
+            else{
+                $error .= '<div class="alert alert-danger">Le mot de passe ne correspond pas au pseudo saisi.</div>';
+            }
+        }
+        else{
+            $error .= '<div class="alert alert-danger">Ce pseudo n\'existe pas.</div>';
+        }
     }
 }
 

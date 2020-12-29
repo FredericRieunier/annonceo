@@ -28,7 +28,6 @@ while( $id_categorie_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
 }
 
 // Affichage dans le select des départements
-// Affichage dans le select des départements
 $r = execute_requete(" SELECT DISTINCT cp FROM annonce ORDER BY cp ASC ");
 
 // On parcourt la requête, à chaque fois on extrait l'indice de département du CP (93 pour 93100) et on l'ajoute à un tableau
@@ -113,6 +112,10 @@ if(empty($_POST)){     //Affichage standard d'index.php
   ");
 
   while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
+    foreach($annonces_en_stock as $indice => $valeur){
+			$annonces_en_stock[$indice] = stripcslashes($valeur);
+		}
+
     $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
       $content .= '<div class="row encart_annonce">';
         $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';

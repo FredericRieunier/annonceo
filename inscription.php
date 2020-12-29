@@ -124,6 +124,7 @@ else{
         }
 
         extract($_POST);
+        debug($_POST);
 
         // Vérification de la disponibilité du pseudo
         $pdostatement = prepare_requete(" SELECT pseudo FROM membre WHERE pseudo = '$pseudo' ");
@@ -139,14 +140,16 @@ else{
         || strlen($pseudo) > 20 || strlen($nom) > 20 || strlen($prenom) > 20 || strlen($mdp) > 60 || strlen($email) > 50 
         || !(preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email))
         || !(preg_match("#^0[1-68]([-. ]?[0-9]{2}){4}$#", $telephone))
+        || stristr($_POST['pseudo'], '\'') || stristr($_POST['pseudo'], '\"') || stristr($_POST['mdp'], '\'') || stristr($_POST['mdp'], '\"') || stristr($_POST['pseudo'], '\\') || stristr($_POST['mdp'], '\\')
         ){
             $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux formats suivants&nbsp;: 
                 <ul>
-                <li>le pseudo, le nom et le prénom ne doiventt pas comporter plus de 20 caractères</li>
+                <li>le pseudo, le nom et le prénom ne doivent pas comporter plus de 20 caractères</li>
                 <li>le mot de passe ne doit pas comporter plus de 60 caractères</li>
                 <li>le mail ne doit pas comporter plus de 50 caractères</li>
                 <li>le format du mail doit être correct (par exemple&nbsp;: prenom@hebergeur.fr ou pseudo@site.com)</li>
                 <li>le numéro de téléphone doit correspondre au format en vigueur en France, ses paires de nombres peuvent être jointes, séparées par des espaces, des tirets ou des points et le numéro ne doit pas comporter de lettres</li>
+                <li>aucun champ ne doit comporter d'apostrophes, de barres obliques inversées ou de guillemets</li>
                 </ul>
                 </div>";
         }

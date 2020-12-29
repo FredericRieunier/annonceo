@@ -106,12 +106,12 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 						$content .= "<td> $valeur </td>";
 				}
 				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_categorie='. $ligne['id_categorie'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )">
+								<a href="?action=suppression&id_categorie='. $ligne['id_categorie'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a>	
 							</td>';
 				$content .= '<td class="text-center">
-								<a href="?action=modification&id_categorie='. $ligne['id_categorie'] .'">
+								<a href="?action=modification&id_categorie='. $ligne['id_categorie'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
 								</a>	
 							</td>';

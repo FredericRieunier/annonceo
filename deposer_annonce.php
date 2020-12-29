@@ -25,7 +25,6 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 		debug($annonce_actuelle);
 
 		if($annonce_actuelle['membre_id_membre'] != $_SESSION['membre']['id_membre']){
-			echo 'Non mais !';
 			header('location:erreur_404.php');
 			exit();
 		}

@@ -434,15 +434,18 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 }
 
 //---------------------------------------------
-//Affichage de toutes les annonces :
+
+//Affichage des les annonces :
 if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des annonces
 
 	// On prépare une variable qui ajoutera dans la requête l'id de la catégorie choisie en select s'il y en a une (cf la fonction add_AND_in_request dans fonction.inc.php)
 	$search_categorie = '';
-	if(isset($_POST['categorie_id_categorie'])){
+	if( isset($_POST['categorie_id_categorie']) ){
 		$search_categorie = add_AND_in_request($_POST['categorie_id_categorie'], 'categorie_id_categorie');
 	}
+
+	
 	// debug($search_categorie);
 
 	// On prépare dans le select les catégories :
@@ -468,30 +471,38 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 
 	}
 
-	// CONTENU DES TD SPECIFIQUES
-	/*  */
-	// On récupère les membres
-	$r = execute_requete(" SELECT id_membre, pseudo 
-						   FROM membre");
-
-	// $membres_tab = array();
-	/* while( $list_membres = $r->fetch(PDO::FETCH_ASSOC) ){
-		foreach($list_membres as $indice => $valeur){
-			array_push($membres_tab, $valeur);    
-		  }
-	} */
-	$list_membres = $r->fetch(PDO::FETCH_ASSOC);
-
-	/*  */
-
 	//On récupère les annonces en bdd:
-	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
-	m.pseudo, c.titreCat, a.date_enregistrement 
-	FROM annonce a, membre m, categorie c
-	WHERE 1 = 1 $search_categorie 
-	AND a.membre_id_membre = m.id_membre 
-	AND a.categorie_id_categorie = c.id_categorie 
-	ORDER BY a.id_annonce DESC");
+	// Si une catégorie a été cliquée et figure dans GET :
+	if( isset($_GET['id_categorie']) && empty($_POST) ){
+		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+		m.pseudo, c.titreCat, a.date_enregistrement, c.id_categorie, m.id_membre 
+		FROM annonce a, membre m, categorie c
+		WHERE 1 = 1 $search_categorie 
+		AND a.membre_id_membre = m.id_membre 
+		AND a.categorie_id_categorie = c.id_categorie
+		AND c.id_categorie = '$_GET[id_categorie]'
+		ORDER BY a.id_annonce DESC");
+		debug($_GET['id_categorie']);
+	} 
+	else{
+		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+		m.pseudo, c.titreCat, a.date_enregistrement, c.id_categorie, m.id_membre 
+		FROM annonce a, membre m, categorie c
+		WHERE 1 = 1 $search_categorie 
+		AND a.membre_id_membre = m.id_membre 
+		AND a.categorie_id_categorie = c.id_categorie 
+		ORDER BY a.id_annonce DESC");
+	}
+	
+	
+
+	// $r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+	// m.pseudo, c.titreCat, a.date_enregistrement, c.id_categorie, m.id_membre 
+	// FROM annonce a, membre m, categorie c
+	// WHERE 1 = 1 $search_categorie 
+	// AND a.membre_id_membre = m.id_membre 
+	// AND a.categorie_id_categorie = c.id_categorie 
+	// ORDER BY a.id_annonce DESC");
 
 	$content .= '<h2>Liste des annonces</h2>';
 	$content .= '<p>Nombre d\'annonces dans la boutique : '. $r->rowCount() .'</p>';
@@ -509,19 +520,28 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 			for( $i = 0; $i < $r->columnCount(); $i++ ){
 				$colonne = $r->getColumnMeta( $i );
 				// debug($colonne['name']);
-				if($colonne['name'] == 'membre_id_membre'){
+				if($colonne['name'] == 'pseudo'){
 					$content .= "<th>Membre auteur</th>";
 				}
 				elseif($colonne['name'] == 'titreCat'){
 					$content .= "<th>Catégorie</th>";
 				}
-				elseif($colonne['name'] == 'photo_id_photo'){
-					$content .= "<th>ID photo</th>";
+				elseif($colonne['name'] == 'description_courte'){
+					$content .= "<th>Description</th>";
+				}
+				elseif($colonne['name'] == 'date_enregistrement'){
+					$content .= "<th>Date</th>";
+				}
+				elseif($colonne['name'] == 'id_annonce'){
+					$content .= "<th>ID</th>";
+				}
+				elseif( ($colonne['name'] == 'id_membre') || ($colonne['name'] == 'id_categorie')){
+					// $content .= "<th>Non</th>";
 				}
 				else{
 					
 					//debug($colonne);
-					$content .= "<th>$colonne[name]</th>";
+					$content .= "<th>" . ucfirst($colonne['name']) . "</th>";
 				}
 			}
 			$content .= '<th>Actions</th>';
@@ -529,22 +549,30 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		$content .= '</tr></thead>';
 
 		while( $ligne = $r->fetch( PDO::FETCH_ASSOC ) ){
+			foreach($ligne as $indice => $valeur){
+				$ligne[$indice] = stripcslashes($valeur);
+			}
 			$content .= '<tbody><tr>';
 				//debug( $ligne );
 
 				// On affiche les informations et la photo
 				foreach( $ligne as $indice => $valeur ){
+					// debug($ligne);
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 					// debug($indice);
 					if( $indice == 'photo' ){ 
 						$content .= "<td><img src='$valeur' width='50'></td>";
 					}
-					/* elseif( $indice == 'membre_id_membre' ){ 
-						$content .= array_search(, $list_membres);
-					}	 */		
-					/* elseif( $indice == 'categorie_id_categorie' ){ 
-						$content .= $titre_categorie;
-					}	 */			
+					elseif( $indice == 'pseudo' ){ 
+						$content .= "<td> <a href='../profil.php?action=affichage&id_membre=" .$ligne['id_membre'] . "'>" . $valeur . "</a></td>";
+					}			
+					elseif( ($indice == 'id_membre') || ($indice == 'id_categorie') ){ 
+						// $content .= '<td>oui</td>';
+					}			
+					
+					elseif( $indice == 'titreCat' ){
+						$content .= "<td> <a href='?action=affichage&id_categorie=" .$ligne['id_categorie'] . "'>" . $valeur . "</a></td>";
+					}
 					//Sinon, on affiche juste la valeur
 					else{ 
 
@@ -552,13 +580,13 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )">
+								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a> 
-								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'">
+								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
 								</a><br>
-								<a href="../fiche_annonce.php?id_annonce='. $ligne['id_annonce'] .'">
+								<a href="../fiche_annonce.php?id_annonce='. $ligne['id_annonce'] .'" title="Afficher">
 									<i class="fas fa-search"></i>
 								</a>	
 							</td>';
