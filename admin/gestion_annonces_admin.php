@@ -75,8 +75,8 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
         //Suppression dans la table 'annonce' A CONDITION que l'id produit corresponde à l'id_annonce que l'on récupère dans l'URL
         execute_requete(" DELETE FROM annonce WHERE id_annonce = '$_GET[id_annonce]' ");
 
-        // header('location:?action=affichage');
-		// exit();
+        header('location:?action=affichage');
+		exit();
 		
 }
 
@@ -435,7 +435,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 
 //---------------------------------------------
 
-//Affichage des les annonces :
+//Affichage des annonces :
 if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des annonces
 
@@ -482,7 +482,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		AND a.categorie_id_categorie = c.id_categorie
 		AND c.id_categorie = '$_GET[id_categorie]'
 		ORDER BY a.id_annonce DESC");
-		debug($_GET['id_categorie']);
+		// debug($_GET['id_categorie']);
 	} 
 	else{
 		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
@@ -505,7 +505,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	// ORDER BY a.id_annonce DESC");
 
 	$content .= '<h2>Liste des annonces</h2>';
-	$content .= '<p>Nombre d\'annonces dans la boutique : '. $r->rowCount() .'</p>';
+	$content .= '<p>Nombre d\'annonces en ligne : '. $r->rowCount() .'</p>';
 	// On affiche la liste des catégories
 	$content .= '<form action="" method="post">';
 	$content .= '<label>Catégorie</label><br>';

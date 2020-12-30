@@ -131,7 +131,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
     <?php require_once "../inc/nav.inc.php"; ?>
 
     <!-- <main class="container"> -->
-        <h1>Gestion des catégories</h1>
+        <h1>Admin - Gestion des catégories</h1>
 
         <a href="?action=ajout">Ajout d'une catégorie</a><br>
         <a href="?action=affichage">Afficher toutes les catégories</a><hr>

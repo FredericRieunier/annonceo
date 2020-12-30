@@ -114,7 +114,27 @@ if(empty($_POST)){     //Affichage standard d'index.php
   while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
     foreach($annonces_en_stock as $indice => $valeur){
 			$annonces_en_stock[$indice] = stripcslashes($valeur);
-		}
+    }
+    
+    // Recherche du pseudo
+    $pseudo_search = execute_requete(" SELECT * FROM membre WHERE id_membre = '$annonces_en_stock[membre_id_membre]' ");
+    $pseudo_tab = $pseudo_search->fetch(PDO::FETCH_ASSOC);
+    
+    // Calcul de la note moyenne du vendeur de l'annonce affichée
+    $pdostatement = execute_requete(" SELECT ROUND(AVG(n.note), 1) 
+    FROM note n, annonce a, membre m
+    WHERE a.id_annonce = '$annonces_en_stock[id_annonce]'
+    AND a.membre_id_membre = m.id_membre
+    AND m.id_membre = n.membre_id_membre1
+    ");
+    $requete_note_moyenne = $pdostatement->fetch(PDO::FETCH_ASSOC);
+    $note_moyenne = $requete_note_moyenne['ROUND(AVG(n.note), 1)'];
+    
+    // debug($note_moyenne);
+    $affichage_note_moyenne = '';
+    if($note_moyenne != NULL && $note_moyenne != ''){ 
+      $affichage_note_moyenne = " - " . $note_moyenne . "/5";
+    }
 
     $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
       $content .= '<div class="row encart_annonce">';
@@ -124,11 +144,9 @@ if(empty($_POST)){     //Affichage standard d'index.php
         $content .= '<div class="col-6 col-sm-9">';
           $content .= "<h3>$annonces_en_stock[titre]</h3>";
           $content .= "<p>$annonces_en_stock[description_courte]</p>";
-          $content .= "<p>$annonces_en_stock[ville] - $annonces_en_stock[cp]</p>";
-          $pseudo_search = execute_requete(" SELECT * FROM membre WHERE id_membre = '$annonces_en_stock[membre_id_membre]' ");
-          $pseudo_tab = $pseudo_search->fetch(PDO::FETCH_ASSOC);
+          $content .= "<p>$annonces_en_stock[ville] - $annonces_en_stock[cp]</p>";          
           $pseudo_membre = $pseudo_tab['pseudo'];
-          $content .= "<div class='row'><p class='col-6'>$pseudo_membre </p>";  
+          $content .= "<div class='row'><p class='col-6'>$pseudo_membre $affichage_note_moyenne</p>";  
           $content .= "<p class='text-right col-6'><strong>$annonces_en_stock[prix]&nbsp;€</strong></p></div>";
         $content .= "</div>";
       $content .= "</div>";

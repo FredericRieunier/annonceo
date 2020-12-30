@@ -2,43 +2,43 @@
 
 <?php
 
-if( !userConnect() ){ //SI l'utilisateur n'est pas connecté, on le redirige vers la page de connexion
+if( !userConnect() ){
 	header('location:connexion.php');
 	exit();
 }
 
-    // Si l'utilisateur a saisi des infos
-    if($_POST){
-        foreach($_POST as $indice => $valeur){
-            $_POST[$indice] = htmlentities(addslashes($valeur));
-        }
+// Si l'utilisateur a saisi des infos
+if($_POST){
+    foreach($_POST as $indice => $valeur){
+        $_POST[$indice] = htmlentities(addslashes($valeur));
+    }
 
-        extract($_POST);
+    extract($_POST);
 
-            // Vérification de conformité des données
-        if( 
-        ( empty($note) && empty($avis) && empty($commentaire) )
-        || strlen($avis) > 255
-        ){
-            $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux règles suivantes.
-                <ul>
-                <li>Au moins un des champs note, avis et commentaire doit être rempli.</li>
-                <li>L'avis ne doit pas comporter plus de 255 caractères</li>
-                </div>";
-        }
-        // INSERTION
-        elseif( empty($error) ){
-            
-            $id_membre_notant = $_SESSION['membre']['id_membre'];
-            
-            $r = execute_requete( "SELECT m.id_membre 
-            FROM membre m, annonce a
-            WHERE m.id_membre = a.membre_id_membre
-            AND a.id_annonce = '$_GET[id_annonce]' 
-            ");
-            $tab_membre_note = $r->fetch(PDO::FETCH_ASSOC);
-            $id_membre_note = $tab_membre_note['id_membre'];
-            debug($id_membre_notant);
+        // Vérification de conformité des données
+    if( 
+    ( empty($note) && empty($avis) && empty($commentaire) )
+    || strlen($avis) > 255
+    ){
+        $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux règles suivantes.
+            <ul>
+            <li>Au moins un des champs note, avis et commentaire doit être rempli.</li>
+            <li>L'avis ne doit pas comporter plus de 255 caractères</li>
+            </div>";
+    }
+    // INSERTION
+    elseif( empty($error) ){
+        
+        $id_membre_notant = $_SESSION['membre']['id_membre'];
+        
+        $r = execute_requete( "SELECT m.id_membre 
+        FROM membre m, annonce a
+        WHERE m.id_membre = a.membre_id_membre
+        AND a.id_annonce = '$_GET[id_annonce]' 
+        ");
+        $tab_membre_note = $r->fetch(PDO::FETCH_ASSOC);
+        $id_membre_note = $tab_membre_note['id_membre'];
+        debug($id_membre_notant);
 
 
         // On envoie dans la table note
@@ -56,25 +56,27 @@ if( !userConnect() ){ //SI l'utilisateur n'est pas connecté, on le redirige ver
 
         $pdostatement->execute();
 
-        // Puis dans la table commentaire
-        $pdostatement = prepare_requete(" INSERT INTO commentaire(membre_id_membre, annonce_id_annonce, commentaire, date_enregistrement)
-        VALUES(:membre_id_membre, :annonce_id_annonce, :commentaire, NOW())
-        ");
+        // Puis dans la table commentaire, s'il y a un commentaire
+
+        if( !empty($commentaire) ){
+            $pdostatement = prepare_requete(" INSERT INTO commentaire(membre_id_membre, annonce_id_annonce, commentaire, date_enregistrement)
+            VALUES(:membre_id_membre, :annonce_id_annonce, :commentaire, NOW())
+            ");
 
 
-        $pdostatement->bindValue(':membre_id_membre', $id_membre_notant, PDO::PARAM_STR);
-        $pdostatement->bindValue(':annonce_id_annonce', $_GET['id_annonce'], PDO::PARAM_STR);
-        $pdostatement->bindValue(':commentaire', $commentaire, PDO::PARAM_STR);
+            $pdostatement->bindValue(':membre_id_membre', $id_membre_notant, PDO::PARAM_STR);
+            $pdostatement->bindValue(':annonce_id_annonce', $_GET['id_annonce'], PDO::PARAM_STR);
+            $pdostatement->bindValue(':commentaire', $commentaire, PDO::PARAM_STR);
 
-        $pdostatement->execute();
-
-        $content .= '<div class="alert alert-success">Inscription validée. 
-                        <a href="' .URL. 'connexion.php">Cliquez ici pour vous connecter.</a>
-                        </div>';
-
+            $pdostatement->execute();
         }
 
+        header("location:fiche_annonce.php?id_annonce=$_GET[id_annonce]");
+        exit();
+
     }
+
+}
 
 
 

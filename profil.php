@@ -21,16 +21,28 @@ if( adminConnect()){
 		
 		extract($tab_infos_membre);
 		
-		
+		// Calcul de la note moyenne du vendeur de l'annonce affichée
+		$r = execute_requete(" SELECT ROUND(AVG(n.note), 1) 
+		FROM note n, annonce a, membre m
+		WHERE a.membre_id_membre = m.id_membre
+		AND m.id_membre = n.membre_id_membre1
+		AND m.id_membre = '$_GET[id_membre]'
+		");
+		$requete_note_moyenne = $r->fetch(PDO::FETCH_ASSOC);
+		$note_moyenne = $requete_note_moyenne['ROUND(AVG(n.note), 1)'];
+		// debug($note_moyenne);
 
         $content .= "<h2>Informations personnelles du membre</h2>
-        <p><strong>ID&nbsp;:</strong> $id_membre</p>
+		<p><strong>ID&nbsp;:</strong> $id_membre</p>
+		<p><strong>Note moyenne&nbsp;:</strong> $note_moyenne/5</p>
         <p><strong>Pseudo&nbsp;:</strong> $pseudo</p>
         <p><strong>Prénom&nbsp;: </strong> $prenom</p>
         <p><strong>Nom&nbsp;: </strong> $nom</p>
         <p><strong>Téléphone&nbsp;: </strong> $telephone</p>
         <p><strong>E-mail&nbsp;: </strong> $email</p>
-        <p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
+		<p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
+		
+		
     }
 
     /* Fin de l'affichage des différents profils pour l'admin */
@@ -92,7 +104,7 @@ if( adminConnect()){
 					foreach( $ligne as $indice => $valeur ){
 						//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 						$valeur = stripcslashes($valeur);
-						debug($valeur);
+						// debug($valeur);
 						
 						if( $indice == 'photo' ){ 
 							$content .= "<td><img src='$valeur' width='50'></td>";
@@ -137,10 +149,21 @@ if( !$_GET ){
     }
 
 
-    extract($_SESSION['membre']);
+	extract($_SESSION['membre']);
+	
+	// Calcul de la note moyenne du vendeur de l'annonce affichée
+	$r = execute_requete(" SELECT ROUND(AVG(n.note), 1) 
+	FROM note n, annonce a, membre m
+	WHERE a.membre_id_membre = m.id_membre
+	AND m.id_membre = n.membre_id_membre1
+	AND m.id_membre = '$id_membre'
+	");
+	$requete_note_moyenne = $r->fetch(PDO::FETCH_ASSOC);
+	$note_moyenne = $requete_note_moyenne['ROUND(AVG(n.note), 1)'];
 
     $content .= "<h2>Vos informations personnelles</h2>
-            <p><strong>Pseudo&nbsp;:</strong> $pseudo</p>
+			<p><strong>Pseudo&nbsp;:</strong> $pseudo</p>
+			<p><strong>Note moyenne&nbsp;:</strong> $note_moyenne/5</p>
             <p><strong>Prénom&nbsp;: </strong> $prenom</p>
             <p><strong>Nom&nbsp;: </strong> $nom</p>
             <p><strong>Téléphone&nbsp;: </strong> $telephone</p>
