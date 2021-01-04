@@ -19,7 +19,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="nav-link" href="<?= URL ?>profil.php">Profil</a>
-          <a class="nav-link" href="<?= URL ?>deposer_annonce.php">Déposer une annonce</a>
+          <a class="nav-link" href="<?= URL ?>deposer_annonce.php?action=ajout">Déposer une annonce</a>
         </div>
       </li>
 
@@ -50,9 +50,11 @@
           BackOffice
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="<?= URL ?>admin/gestion_annonces_admin.php">Gestion des annonces</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_annonces_admin.php?action=affichage">Gestion des annonces</a>
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_membres.php">Gestion des membres</a>
-          <a class="dropdown-item" href="<?= URL ?>admin/gestion_categories.php">Gestion des catégories</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_categories.php?action=affichage">Gestion des catégories</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_commentaires_admin.php?action=affichage">Gestion des commentaires</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/statistiques.php">Statistiques</a>          
         </div> 
         </li> 
 
@@ -67,6 +69,10 @@
       </li>
       <?php endif; ?>
     </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Valider</button>
+    </form>
   </div>
 </nav>
 

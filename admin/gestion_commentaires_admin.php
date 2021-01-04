@@ -55,7 +55,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
         // Voir pourquoi n.avis conduit à afficher les avis correctement d'abord puis après les avoir tous passés en revue à en afficher 7 en boucle
 
         $content .= '<h2>Liste des commentaires</h2>';
-        $content .= '<p>Nombre de commentaires dans la boutique : '. $r->rowCount() .'</p>';
+        $content .= '<p>Nombre de commentaires en ligne : '. $r->rowCount() .'</p>';
 
         // On affiche le tableau des commentaires
         $content .= '<table border="2" cellpadding="5" id="table_id">';
@@ -136,12 +136,12 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 
     <!-- Pour gagner du temps, je n'ai pas mis en place de balises meta SEO ailleurs que sur la page d'accueil  -->
 
-    <title>Admin - Gestion des commentaires, notes et avis | Annonceo, le meilleur des annonces en ligne</title>
+    <title>Admin - Gestion des commentaires | Annonceo, le meilleur des annonces en ligne</title>
 </head>
 <body>
     <?php require_once "../inc/nav.inc.php"; ?>
 
-        <h1>Admin - Gestion des commentaires, notes et avis</h1>
+        <h1>Admin - Gestion des commentaires</h1>
         <?= $error; ?>
         <?= $content; ?>
 

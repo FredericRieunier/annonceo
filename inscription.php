@@ -124,7 +124,6 @@ else{
         }
 
         extract($_POST);
-        debug($_POST);
 
         // Vérification de la disponibilité du pseudo
         $pdostatement = prepare_requete(" SELECT pseudo FROM membre WHERE pseudo = '$pseudo' ");

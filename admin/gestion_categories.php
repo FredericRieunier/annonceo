@@ -69,9 +69,8 @@ if( !empty( $_POST ) ){
 								)
 							");
 			//redirection vers l'affichage :
-
-			// header('location:?action=affichage');
-			// exit();
+			header('location:?action=affichage');
+			exit();
 		}
 
 	}
@@ -95,8 +94,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					//debug($colonne);
 				$content .= "<th>$colonne[name]</th>";
 			}
-			$content .= '<th>Suppression</th>';
-			$content .= '<th>Modification</th>';
+			$content .= '<th>Actions</th>';
 		$content .= '</tr>';
 
 		while( $ligne = $r->fetch( PDO::FETCH_ASSOC ) ){
@@ -108,11 +106,12 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 				$content .= '<td class="text-center">
 								<a href="?action=suppression&id_categorie='. $ligne['id_categorie'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
-								</a>	
-							</td>';
-				$content .= '<td class="text-center">
+								</a> 
 								<a href="?action=modification&id_categorie='. $ligne['id_categorie'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
+								</a> 	
+								<a href="gestion_annonces_admin.php?action=affichage&id_categorie='. $ligne['id_categorie'] .'" title="Afficher">
+                                        <i class="fas fa-search"></i>
 								</a>	
 							</td>';
 			$content .= '</tr>';

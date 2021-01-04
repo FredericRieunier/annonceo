@@ -434,10 +434,25 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 }
 
 //---------------------------------------------
+// Affichage des photos d'une annonce si elles ont été cliquées
+if( isset($_GET['action']) && $_GET['action'] == 'affichage_photos' ){
+	$r = execute_requete(" SELECT * FROM photo WHERE id_photo = '$_GET[id_photo]' ");
+	;
+
+	$content .= "<div>";
+	foreach( $tab_photos = $r->fetch(PDO::FETCH_ASSOC) as $indice => $valeur ){
+		if($indice != 'id_photo'){
+			$content .= "<img src='" . $valeur . "' style='max-width:80%;'><br>";
+		}
+	}	
+	$content .= "</div>";
+}
 
 //Affichage des annonces :
-if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
+elseif( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	//S'il existe une 'action' dans mons URL ET que cette 'action' est égale à 'affichage', alors on affiche la liste des annonces
+
+	
 
 	// On prépare une variable qui ajoutera dans la requête l'id de la catégorie choisie en select s'il y en a une (cf la fonction add_AND_in_request dans fonction.inc.php)
 	$search_categorie = '';
@@ -474,7 +489,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	//On récupère les annonces en bdd:
 	// Si une catégorie a été cliquée et figure dans GET :
 	if( isset($_GET['id_categorie']) && empty($_POST) ){
-		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, a.photo_id_photo,
 		m.pseudo, c.titreCat, a.date_enregistrement, c.id_categorie, m.id_membre 
 		FROM annonce a, membre m, categorie c
 		WHERE 1 = 1 $search_categorie 
@@ -485,7 +500,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 		// debug($_GET['id_categorie']);
 	} 
 	else{
-		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+		$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, a.photo_id_photo,
 		m.pseudo, c.titreCat, a.date_enregistrement, c.id_categorie, m.id_membre 
 		FROM annonce a, membre m, categorie c
 		WHERE 1 = 1 $search_categorie 
@@ -535,7 +550,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 				elseif($colonne['name'] == 'id_annonce'){
 					$content .= "<th>ID</th>";
 				}
-				elseif( ($colonne['name'] == 'id_membre') || ($colonne['name'] == 'id_categorie')){
+				elseif( ($colonne['name'] == 'id_membre') || ($colonne['name'] == 'id_categorie') || ($colonne['name'] == 'photo_id_photo') ){
 					// $content .= "<th>Non</th>";
 				}
 				else{
@@ -561,12 +576,13 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 					// debug($indice);
 					if( $indice == 'photo' ){ 
-						$content .= "<td><img src='$valeur' width='50'></td>";
+						$content .= "<td><img src='$valeur' width='50'><br>";
+						$content .= "<a href='?action=affichage_photos&id_photo=" . $ligne['photo_id_photo'] . "'>Voir les autres photos</a></td>";
 					}
 					elseif( $indice == 'pseudo' ){ 
 						$content .= "<td> <a href='../profil.php?action=affichage&id_membre=" .$ligne['id_membre'] . "'>" . $valeur . "</a></td>";
 					}			
-					elseif( ($indice == 'id_membre') || ($indice == 'id_categorie') ){ 
+					elseif( ($indice == 'id_membre') || ($indice == 'id_categorie') || ($indice == 'photo_id_photo') ){ 
 						// $content .= '<td>oui</td>';
 					}			
 					
@@ -782,7 +798,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 	<!-- value="<?= $description_courte_value ?>" -->
 
 	<label>Description longue</label><br>
-	<textarea name="description_longue" id="" cols="30" rows="10" class="form-control"><?= $description_longue_value ?></textarea><br>
+	<textarea name="description_longue" cols="30" rows="10" class="form-control"><?= $description_longue_value ?></textarea><br>
 	<!-- <?= $description_longue_value ?> -->
 
 	<label>Prix</label><br>

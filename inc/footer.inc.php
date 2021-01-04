@@ -1,7 +1,9 @@
 </main>
 
 <footer>
-    <p>Footer de la page.</p>
+	<p><a href="../contact.php">Nous contacter</a></p>
+    <p><a href="">Mentions légales</a></p>
+	<p><a href="">Conditions générales de vente</a></p>
 </footer>
     
     <!-- CDN JQUERY -->

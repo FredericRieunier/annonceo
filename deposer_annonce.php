@@ -1,5 +1,6 @@
 <?php require_once 'inc/header.inc.php'; ?>
 <?php
+// debug($_FILES['photo1']);
 //Restriction de l'accès à la page 
 if( !userConnect() ){ //SI le user N'EST PAS connecté, on le redirige vers la page de connexion
 

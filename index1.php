@@ -7,7 +7,7 @@
 // Affichage dans le select des catégories
 $pdostatement = execute_requete(" SELECT id_categorie, titreCat FROM categorie ");
 
-$list_id_categorie = '<option value="0"></option>';
+$list_id_categorie = '<option value="0">Choisissez une catégorie</option>';
 while( $id_categorie_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
     $list_id_categorie .= "<option value='";
     
@@ -43,7 +43,7 @@ while( $list_departements = $r->fetch(PDO::FETCH_ASSOC) ){
 $departements_tab = array_unique($departements_tab);
 
 // On initialise la liste du select
-$list_id_departements = '<option value="0"></option>';
+$list_id_departements = '<option value="0">Choisissez un département</option>';
 
 // On affiche dans ce select le tableau obtenu précédemment
     foreach($departements_tab as $indice => $valeur){
@@ -59,7 +59,7 @@ $list_id_departements = '<option value="0"></option>';
 $pdostatement = execute_requete(" SELECT id_membre, pseudo FROM membre ");
 
 // On initialise la liste des membres qui s'affichera dans un select
-$list_id_membre = '<option value="0"></option>';
+$list_id_membre = '<option value="0">Choisissez un membre</option>';
 
 while( $id_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){    
     $list_id_membre .= "<option value='";
@@ -79,7 +79,7 @@ while( $id_en_bdd = $pdostatement->fetch(PDO::FETCH_ASSOC) ){
 
 // Affichage dans le select des prix max
 $r = execute_requete(" SELECT DISTINCT prix FROM annonce ORDER BY prix ASC ");
-$list_prix_max = '<option value="0"></option>';
+$list_prix_max = '<option value="0">Choisissez un prix maximum</option>';
 while( $prix_en_bdd = $r->fetch(PDO::FETCH_ASSOC) ){    
 
 
@@ -92,7 +92,7 @@ while( $prix_en_bdd = $r->fetch(PDO::FETCH_ASSOC) ){
 
 // Affichage dans le select des prix min
 $r = execute_requete(" SELECT DISTINCT prix FROM annonce ORDER BY prix ASC ");
-$list_prix_min = '<option value="0"></option>';
+$list_prix_min = '<option value="0">Choisissez un prix minimum</option>';
 while( $prix_en_bdd = $r->fetch(PDO::FETCH_ASSOC) ){    
 
 
@@ -162,7 +162,7 @@ else{ //Il y a qqch dans le $_POST
  
 
   extract($_POST);
-  debug($_POST);
+  // debug($_POST);
 
   $search_categorie = add_AND_in_request($categorie_id_categorie, 'categorie_id_categorie');
   $search_membre = add_AND_in_request($membre, 'membre_id_membre');
@@ -210,6 +210,9 @@ else{ //Il y a qqch dans le $_POST
         // On a un id bien numérique et qui existe dans la bdd, on peut donc afficher toutes les annonces correspondant à cette requête :      
 
         while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
+          foreach($annonces_en_stock as $indice => $valeur){
+            $annonces_en_stock[$indice] = stripcslashes($valeur);
+          }
           $content .= '<div><a href="">';
             $content .= '<div class="row encart_annonce">';
               $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
@@ -302,38 +305,38 @@ else{ //Il y a qqch dans le $_POST
 <!-- <main class="container-fluid"> -->
 <h1>Accueil</h1>
 
-<form action="" method="post">
+<form method="post">
 
   <label>Trier par prix</label><br>
-	<select name="order_prix" id="" class="form-control">
-    <option value=""></option>
+	<select name="order_prix" class="form-control">
+    <option value="">Choisissez un tri</option>
 		<option value="min_au_max">Du moins cher au plus cher</option>
     <option value="max_au_min">Du plus cher au moins cher</option>
 	</select>
 
   <label>Catégorie</label><br>
-	<select name="categorie_id_categorie" id="" class="form-control">
+	<select name="categorie_id_categorie" class="form-control">
 		<?= $list_id_categorie; ?>
 	</select>
 
 
   <label>Département</label><br>
-	<select name="departement" id="" class="form-control">
+	<select name="departement" class="form-control">
     <?= $list_id_departements; ?>
 	</select>
 
-  <label for="" >Membre</label> <br>
-  <select name="membre" id="" class="form-control">
+  <label>Membre</label> <br>
+  <select name="membre" class="form-control">
     <?= $list_id_membre; ?>
   </select>
 
-  <label for="">Prix maximum</label><br>
-  <select name="prix_maximum" id="" class="form-control">
+  <label>Prix maximum</label><br>
+  <select name="prix_maximum" class="form-control">
     <?= $list_prix_max; ?>
   </select><br>
 
-  <label for="">Prix minimum</label><br>
-  <select name="prix_minimum" id="" class="form-control">
+  <label>Prix minimum</label><br>
+  <select name="prix_minimum" class="form-control">
     <?= $list_prix_min; ?>
   </select><br>
 

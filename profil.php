@@ -247,7 +247,34 @@ if( !$_GET ){
 							</td>';
 			$content .= '</tr></tbody>';
 		}
-    $content .= '</table>';
+	$content .= '</table>';
+	
+	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
+	// On affiche les commentaires des annonces dont il est l'auteur publiés après son dernier message
+	$r = execute_requete(" SELECT DISTINCT c.commentaire
+							FROM annonce a, commentaire c, membre m
+							WHERE a.membre_id_membre = $id_membre_en_ligne
+							AND a.id_annonce = c.annonce_id_annonce
+							
+	");
+	// trouver comment trouver une condition disant qu'on affiche le commentaire s'il est écrit par un membre dft du membre en ligne et s'il est postérieur au dernier message du membre en ligne
+
+	$content .= '<br><table border="2" cellpadding="5" id="table_id">';
+	$content .= '<thead><tr><th>Commentaires auxquels vous n\'avez pas répondu</th></tr>';
+	while( $tab_annonces_membre_en_ligne = $r->fetch(PDO::FETCH_ASSOC) ){
+		$content .= "<tr>";
+		foreach($tab_annonces_membre_en_ligne as $indice => $value){
+			if( $indice == 'id_membre' || $indice == 'membre_id_membre' ){
+
+			}
+			else{
+				$content .=  "<td>" . stripcslashes($value) ."</td>";
+			}
+		}
+		$content .= "</tr>";
+	}
+
+	$content .= "</table>";
     
 }
 

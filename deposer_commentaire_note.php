@@ -57,6 +57,7 @@ if($_POST){
         $pdostatement->execute();
 
         // Puis dans la table commentaire, s'il y a un commentaire
+        debug($commentaire);
 
         if( !empty($commentaire) ){
             $pdostatement = prepare_requete(" INSERT INTO commentaire(membre_id_membre, annonce_id_annonce, commentaire, date_enregistrement)

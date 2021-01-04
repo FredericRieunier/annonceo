@@ -41,7 +41,6 @@ function userConnect(){
 }
 
 function adminConnect(){
-
     if(userConnect() && $_SESSION['membre']['statut'] == 1){ 
         // Si l'internaute est connecté et qu'il est admin (donc que son statut vaut 1)
         return true;
@@ -49,7 +48,6 @@ function adminConnect(){
     else{
         return false;
     }
-
 }
 
 // Pour gérer plus proprement l'affichage de la civilité
@@ -109,6 +107,7 @@ function rename_photo($nom_photo, $new_photo_bdd, $current_photo_bdd){
     if( empty($nom_photo) ){ $new_photo_bdd = '';	}
     else{ rename($current_photo_bdd, $new_photo_bdd); }
 
+    // return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'img/', $new_photo_bdd );
     return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'http://localhost', $new_photo_bdd );
 }
 

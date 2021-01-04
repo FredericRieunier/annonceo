@@ -9,11 +9,31 @@ if( !adminConnect() ){
 
 //Gestion de la SUPPRESSION :
 
-if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 	
+if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){ 
+	
+	/* execute_requete(" DELETE FROM photo, annonce, membre, note, commentaire 
+						WHERE annonce.membre_id_membre = '$_GET[id_membre]'
+						AND membre.id_membre = '$_GET[id_membre]'
+						AND annonce.photo_id_photo = photo.id_photo
+						AND note.membre_id_membre2 = '$_GET[id_membre]'
+						AND note.membre_id_membre1 = '$_GET[id_membre]'
+						AND commentaire.membre_id_membre = '$_GET[id_membre]'											
+	"); */
 
-    execute_requete(" DELETE FROM membre WHERE id_membre = '$_GET[id_membre]' ");
-    header('location:?action=affichage');
-    exit();
+	/* execute_requete(" DELETE FROM photo, annonce
+						WHERE annonce.membre_id_membre = '$_GET[id_membre]'
+						AND annonce.photo_id_photo = photo.id_photo									
+	"); */
+
+
+	execute_requete(" DELETE FROM membre
+						WHERE membre.id_membre = '$_GET[id_membre]'									
+	");
+
+	// execute_requete(" DELETE FROM annonce WHERE membre_id_membre = '$_GET[id_membre]' ");
+    // execute_requete(" DELETE FROM membre WHERE id_membre = '$_GET[id_membre]' ");
+    // header('location:?action=affichage');
+    // exit();
 }
 
 //---------------------------------------------
