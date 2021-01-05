@@ -213,7 +213,7 @@ else{ //Il y a qqch dans le $_POST
           foreach($annonces_en_stock as $indice => $valeur){
             $annonces_en_stock[$indice] = stripcslashes($valeur);
           }
-          $content .= '<div><a href="">';
+          $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
             $content .= '<div class="row encart_annonce">';
               $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
                 $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
@@ -345,23 +345,6 @@ else{ //Il y a qqch dans le $_POST
 
 </form>
 <br>
-
-<div>
-<a href="">
-<div class="row encart_annonce">
-  <div style="border:1px red solid;" class="col-6 col-sm-3 pl-0 pr-0">
-    <img src="img/208_bottes-2.jpg" style="border:1px green solid;"  class="" alt="">
-  </div>
-  <div class="col-6 col-sm-9">
-    <h3>Titre de l'annonce</h3>
-    <h4>Prix</h4>
-    <p>Catégorie</p>
-    <p>Ville Code Postal</p>
-    <p>Date enregistrement</p>
-  </div>
-</div>
-</a>
-</div>
 
 <?= $content; ?>
 

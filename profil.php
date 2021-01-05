@@ -231,7 +231,7 @@ if( !$_GET ){
 					//Sinon, on affiche juste la valeur
 					else{ 
 
-						$content .= "<td> $valeur </td>";
+						$content .= "<td>" . stripcslashes($valeur) . "</td>";
 					}
 				}
 				$content .= '<td class="text-center">
@@ -250,31 +250,61 @@ if( !$_GET ){
 	$content .= '</table>';
 	
 	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
-	// On affiche les commentaires des annonces dont il est l'auteur publiés après son dernier message
-	$r = execute_requete(" SELECT DISTINCT c.commentaire
-							FROM annonce a, commentaire c, membre m
-							WHERE a.membre_id_membre = $id_membre_en_ligne
-							AND a.id_annonce = c.annonce_id_annonce
-							
+
+	// On voit si le membre a publié des annonces
+	/* $r = execute_requete(" SELECT id_annonce 
+							FROM annonce
+							WHERE membre_id_membre = '$id_membre_en_ligne' 
+	"); */
+
+	// On voit d'abord la date du dernier message posté par le membre en ligne sur une de ses annonces
+	$s = execute_requete(" SELECT c.date_enregistrement AS date_commentaire
+		FROM commentaire c, annonce a
+		WHERE c.membre_id_membre = '$id_membre_en_ligne'
+		AND c.annonce_id_annonce = a.id_annonce
+		AND a.membre_id_membre = c.membre_id_membre
+		ORDER BY date_commentaire DESC LIMIT 1
 	");
-	// trouver comment trouver une condition disant qu'on affiche le commentaire s'il est écrit par un membre dft du membre en ligne et s'il est postérieur au dernier message du membre en ligne
+	// Notice: Trying to access array offset on value of type bool in C:\MAMP\htdocs\PHP\00-Annonceo_V1.0\profil.php on line 268
 
-	$content .= '<br><table border="2" cellpadding="5" id="table_id">';
-	$content .= '<thead><tr><th>Commentaires auxquels vous n\'avez pas répondu</th></tr>';
-	while( $tab_annonces_membre_en_ligne = $r->fetch(PDO::FETCH_ASSOC) ){
-		$content .= "<tr>";
-		foreach($tab_annonces_membre_en_ligne as $indice => $value){
-			if( $indice == 'id_membre' || $indice == 'membre_id_membre' ){
 
+	if( $s->rowCount() >= 1 ){
+		// S'il y a au moins une annonce, on recherche les commentaires des annonces dont il est l'auteur publiés après son dernier message
+		
+		$date_dernier_commentaire_membre_en_ligne = $s->fetch(PDO::FETCH_ASSOC)['date_commentaire'];
+		// debug($date_dernier_commentaire_membre_en_ligne);
+
+		// On cherche les commentaires des autres membres postés après son dernier message
+		$r = execute_requete(" SELECT DISTINCT commentaire
+		FROM commentaire c, annonce a
+		WHERE c.membre_id_membre != '$id_membre_en_ligne'
+		AND c.date_enregistrement > '$date_dernier_commentaire_membre_en_ligne'
+		AND a.membre_id_membre = '$id_membre_en_ligne'
+		AND a.id_annonce = c.annonce_id_annonce
+		");
+
+		if( $r->rowCount() >=1 ){
+			
+
+			// L'affichage
+			$content .= '<br><table border="2" cellpadding="5" id="table_id">';
+			$content .= '<thead><tr><th>Commentaires auxquels vous n\'avez pas répondu</th></tr>';
+			while( $tab_derniers_commentaires_autres_membres = $r->fetch(PDO::FETCH_ASSOC) ){
+				
+				foreach($tab_derniers_commentaires_autres_membres as $indice => $value){
+					
+					$content .= "<tr>";
+					$content .=  "<td>" . stripcslashes($value) ."</td>";
+					$content .= "</tr>";
+				}
+				
 			}
-			else{
-				$content .=  "<td>" . stripcslashes($value) ."</td>";
-			}
+
+			$content .= "</table>";
 		}
-		$content .= "</tr>";
 	}
 
-	$content .= "</table>";
+	
     
 }
 

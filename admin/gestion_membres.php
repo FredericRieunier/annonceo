@@ -20,12 +20,22 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 						AND commentaire.membre_id_membre = '$_GET[id_membre]'											
 	"); */
 
-	/* execute_requete(" DELETE FROM photo, annonce
-						WHERE annonce.membre_id_membre = '$_GET[id_membre]'
-						AND annonce.photo_id_photo = photo.id_photo									
-	"); */
+	// On récupère les id_photo photos déposées par membre en bdd
+	$r = execute_requete(" SELECT p.id_photo 
+						FROM photo p, annonce a
+						WHERE a.membre_id_membre = '$_GET[id_membre]'
+						AND a.photo_id_photo = p.id_photo	
+	");
 
+	// Supprimer photo physiquement
 
+	while( $photo_membre = $r->fetch(PDO::FETCH_ASSOC) ){
+		execute_requete(" DELETE FROM photo
+						WHERE id_photo = '$photo_membre[id_photo]'								
+		");
+
+	}
+	
 	execute_requete(" DELETE FROM membre
 						WHERE membre.id_membre = '$_GET[id_membre]'									
 	");

@@ -20,11 +20,11 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 
 
 	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
-		m.pseudo, c.titreCat, a.date_enregistrement 
-		FROM annonce a, membre m, categorie c
-		WHERE a.id_annonce = '$_GET[id_annonce]'
-		AND a.membre_id_membre = m.id_membre 
-		AND a.categorie_id_categorie = c.id_categorie ");
+	m.pseudo, m.email, m.id_membre, c.titreCat, a.date_enregistrement 
+	FROM annonce a, membre m, categorie c
+	WHERE a.id_annonce = '$_GET[id_annonce]'
+	AND a.membre_id_membre = m.id_membre 
+	AND a.categorie_id_categorie = c.id_categorie ");
 
 	$annonce = $r->fetch( PDO::FETCH_ASSOC );
 
@@ -49,7 +49,13 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 		elseif( !empty($description_courte) ){
 			$content .= "<p><strong>Description :</strong><br> $description_courte</p>";
 		}
+		list($date, $time) = explode(" ", $date_enregistrement);
+		list($year, $month, $day) = explode("-", $date);
+		$date_enregistrement = "$day/$month/$year";
+		$content .= "<p><strong>Date de publication :</strong><br>" . $date_enregistrement . "</p>";
+		debug($date_enregistrement);
 		$content .= "<p><strong>Vendeur/Vendeuse :</strong><br>$pseudo <br>Note moyenne : $note_moyenne/5</p>";
+		$content .= "<a href='contacter_membre.php?id_membre=" . $id_membre . "'><p style='background-color:green; color:white; max-width: 200px;'>Contacter $pseudo</p></a>";
 		$content .= "<p><strong>Adresse :</strong><br>$adresse <br>$cp $ville <br> $pays</p>";
 
 		$content .= "<p>Ajouter date de publication (faire fonction pour mettre au bon format), note du vendeur, affichage des commentaires, ajout de lightbox ou autre syst (sous réserve que l'user soit connecté : formulaire, sinon : 'se connecter pour noter, commenter, contacter' pour noter le vendeur, commenter l'annonce, bouton vert pour le contacter.</p>";
@@ -102,7 +108,7 @@ else{ //SINON, on le redirige vers une page d'erreur
 <?php if(userConnect()): ?>
 <p><a href="deposer_commentaire_note.php?id_annonce=<?= $_GET['id_annonce'] ?>">Déposer un commentaire ou une note</a></p>
 <?php else: ?>
-<p><a href="connexion.php">Connectez-vous pour d	époser un commentaire ou une note</a></p>
+<p><a href="connexion.php">Connectez-vous pour déposer un commentaire ou une note</a></p>
 
 <?php endif ?>
 
