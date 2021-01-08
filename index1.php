@@ -104,7 +104,62 @@ while( $prix_en_bdd = $r->fetch(PDO::FETCH_ASSOC) ){
 }
 
 
-if(empty($_POST)){     //Affichage standard d'index.php
+
+// Si on a utilisé le champ de recherche du menu
+if( isset($_POST['search']) && !empty($_POST) ){
+  // On récupère les termes de la recherches et on divise la recherche en termes individuels
+  $recherche = explode( " ", htmlentities(addslashes($_POST['search'])) );
+
+  
+  foreach($recherche as $indice => $valeur){
+  
+    // On élimine les principaux articles de la recherche
+    if($valeur != "le" && $valeur != "la"){
+
+      $r = execute_requete(" SELECT DISTINCT a.*
+                            FROM annonce a
+                            WHERE a.titre LIKE '%$valeur%' 
+                            ");
+
+      // S'il y a au moins 1 résultat, on l'affiche
+      if($r->rowCount() >=1){
+            
+        while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
+          // debug($annonces_en_stock);
+          foreach($annonces_en_stock as $indice => $valeur){
+            $annonces_en_stock[$indice] = stripcslashes($valeur);
+          }
+          $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
+            $content .= '<div class="row encart_annonce">';
+              $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
+                $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
+              $content .= '</div>';
+              $content .= '<div class="col-6 col-sm-9">';
+                $content .= "<h3>$annonces_en_stock[titre]</h3>";
+                $content .= "<p>$annonces_en_stock[description_courte]</p>";
+                $content .= "<p>$annonces_en_stock[ville] - $annonces_en_stock[cp]</p>";
+                $pseudo_search = execute_requete(" SELECT * FROM membre WHERE id_membre = '$annonces_en_stock[membre_id_membre]' ");
+                $pseudo_tab = $pseudo_search->fetch(PDO::FETCH_ASSOC);
+                $pseudo_membre = $pseudo_tab['pseudo'];
+                $content .= "<div class='row'><p class='col-6'>$pseudo_membre </p>";  
+                $content .= "<p class='text-right col-6'><strong>$annonces_en_stock[prix]&nbsp;€</strong></p></div>";
+              $content .= "</div>";
+            $content .= "</div>";
+          $content .= '</a></div>';
+
+        }
+
+      }
+      elseif($r->rowCount() < 1){
+        $content .= "<p class='alert alert-warning'>Il n'y a aucun résultat.</p>";
+      }
+    }
+  }
+
+
+}
+
+elseif(empty($_POST)){     //Affichage standard d'index.php
 //On récupère les annonces en bdd:
   $r = execute_requete(" SELECT *
   FROM annonce
@@ -237,11 +292,8 @@ else{ //Il y a qqch dans le $_POST
 
       }
       else{
-        // Redirection vers une page d'erreur
+        $content .= "<p class='alert alert-warning'>Il n'y a aucun résultat.</p>";
       }
-
-
-    
 
   }
   else{
@@ -264,6 +316,8 @@ else{ //Il y a qqch dans le $_POST
 //     <p>Date enregistrement</p>
 //   </div>
 // </div>
+
+
 
 ?>
 

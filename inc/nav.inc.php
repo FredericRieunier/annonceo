@@ -70,8 +70,9 @@
       </li>
       <?php endif; ?>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
+
+    <form method="post" action="<?= URL ?>index1.php" class="form-inline my-2 my-lg-0">
+      <input name="search" class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Valider</button>
     </form>
   </div>
