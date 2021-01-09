@@ -23,7 +23,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'modification' && empty($_POST)
         $comment_value = $r->fetch(PDO::FETCH_ASSOC)['commentaire'];
         $comment_value = stripcslashes($comment_value);
     }
-    debug($comment_value);
+    // debug($comment_value);
 
     $content = "<p><a href='?action=affichage'>Retourner à la liste des commentaires</a></p>
                 <form method='post'>

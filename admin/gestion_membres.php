@@ -42,8 +42,8 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 
 	// execute_requete(" DELETE FROM annonce WHERE membre_id_membre = '$_GET[id_membre]' ");
     // execute_requete(" DELETE FROM membre WHERE id_membre = '$_GET[id_membre]' ");
-    // header('location:?action=affichage');
-    // exit();
+    header('location:?action=affichage');
+    exit();
 }
 
 //---------------------------------------------
@@ -171,7 +171,7 @@ if( isset($_GET['action']) && ($_GET['action'] == 'ajout' || $_GET['action'] == 
         $r = execute_requete(" SELECT * FROM membre WHERE id_membre = '$_GET[id_membre]' ");
         //exploitation des données :
         $membre_actuel = $r->fetch( PDO::FETCH_ASSOC );
-            debug( $membre_actuel );
+            // debug( $membre_actuel );
 	}
 
     //conditions pour vérifier l'existence des variables :

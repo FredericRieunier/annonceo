@@ -38,7 +38,7 @@ if($_POST){
         ");
         $tab_membre_note = $r->fetch(PDO::FETCH_ASSOC);
         $id_membre_note = $tab_membre_note['id_membre'];
-        debug($id_membre_notant);
+        // debug($id_membre_notant);
 
 
         // On envoie dans la table note
@@ -57,7 +57,7 @@ if($_POST){
         $pdostatement->execute();
 
         // Puis dans la table commentaire, s'il y a un commentaire
-        debug($commentaire);
+        // debug($commentaire);
 
         if( !empty($commentaire) ){
             $pdostatement = prepare_requete(" INSERT INTO commentaire(membre_id_membre, annonce_id_annonce, commentaire, date_enregistrement)

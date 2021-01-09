@@ -23,7 +23,7 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 		//exploitation des données :
 		$annonce_actuelle = $r->fetch( PDO::FETCH_ASSOC );
 
-		debug($annonce_actuelle);
+		// debug($annonce_actuelle);
 
 		if($annonce_actuelle['membre_id_membre'] != $_SESSION['membre']['id_membre']){
 			header('location:erreur_404.php');

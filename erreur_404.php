@@ -10,7 +10,7 @@
         <h1>Erreur : page non trouvée</h1>
 
         <p>La page que vous cherchez n'a pas été trouvée.</p>
-        <p><a href="index1.php">Revenir à l'index.</a></p>
+        <p><a href="index.php">Revenir à l'index.</a></p>
 
 
 

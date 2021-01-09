@@ -60,7 +60,7 @@ if( !empty( $_POST ) ){
 			$error .= "<div class='alert alert-warning'>Le titre de catégorie entré existe déjà dans la base de données.</div>";
 		}
 		else{
-			debug($_POST['titreCat']);
+			// debug($_POST['titreCat']);
 			execute_requete(" INSERT INTO categorie( titreCat, motscles ) 
 
 							VALUES(

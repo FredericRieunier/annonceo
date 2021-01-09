@@ -1,7 +1,7 @@
 </main>
 
 <footer>
-	<p><a href="../contact.php">Nous contacter</a></p>
+	<p><a href="<?= URL ?>contact.php">Nous contacter</a></p>
     <p><a href="">Mentions légales</a></p>
 	<p><a href="">Conditions générales de vente</a></p>
 </footer>

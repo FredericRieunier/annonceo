@@ -19,7 +19,7 @@ if(userConnect()){
 if($_POST){
     extract($_POST);
 
-    debug($_POST);
+    // debug($_POST);
 
     if( stristr($_POST['pseudo'], '\'') || stristr($_POST['pseudo'], '\"') || stristr($_POST['mdp'], '\'') || stristr($_POST['mdp'], '\"') || stristr($_POST['pseudo'], '\\') || stristr($_POST['mdp'], '\\') ){
         $error .= '<div class="alert alert-danger">Les champs pseudo et mot de passe ne peuvent pas recevoir d\'apostrophes, de barres obliques inversées ou de guillemets.</div>';
@@ -40,6 +40,7 @@ if($_POST){
                 
                 // redirection vers la page de profil
                 header('location:profil.php');
+                exit;
             }
             else{
                 $error .= '<div class="alert alert-danger">Le mot de passe ne correspond pas au pseudo saisi.</div>';

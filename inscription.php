@@ -98,8 +98,8 @@ if(userConnect()){
         // Fin de requête de modification
     }
     else{
-    header('location:profil.php');
-    exit();
+        header('location:profil.php');
+        exit();
     }
 }
 // Sinon, l'utilisateur n'est pas connecté

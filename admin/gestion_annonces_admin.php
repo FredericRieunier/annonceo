@@ -91,7 +91,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$_POST[$key] = htmlentities( addslashes( $value ) );
 	}
 	extract($_POST);
-	debug($_POST);
+	// debug($_POST);
 
 	// Vérification de conformité des données
 	if( 
@@ -427,8 +427,8 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$pdostatement->execute();
 
 		//redirection vers l'affichage :
-		// header('location:?action=affichage');
-		// exit();
+		header('location:?action=affichage');
+		exit();
 
 	}
 }

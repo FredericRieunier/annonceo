@@ -53,7 +53,7 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 		list($year, $month, $day) = explode("-", $date);
 		$date_enregistrement = "$day/$month/$year";
 		$content .= "<p><strong>Date de publication :</strong><br>" . $date_enregistrement . "</p>";
-		debug($date_enregistrement);
+		// debug($date_enregistrement);
 		$content .= "<p><strong>Vendeur/Vendeuse :</strong><br>$pseudo <br>Note moyenne : $note_moyenne/5</p>";
 		$content .= "<a href='contacter_membre.php?id_membre=" . $id_membre . "'><p style='background-color:green; color:white; max-width: 200px;'>Contacter $pseudo</p></a>";
 		$content .= "<p><strong>Adresse :</strong><br>$adresse <br>$cp $ville <br> $pays</p>";

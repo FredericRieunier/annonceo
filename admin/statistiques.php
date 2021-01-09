@@ -20,7 +20,7 @@ while( $meilleures_notes = $r->fetch(PDO::FETCH_ASSOC) ){
     $i = $i+1;
 }
 
-// Membres les plus actifs
+// Membres les plus actifs, c'est-à-dire ayant publié le plus d'annonces
 $r = execute_requete(" SELECT m.prenom, m.nom, COUNT(a.id_annonce) AS nombre_annonces
                         FROM membre m, annonce a
                         WHERE a.membre_id_membre = m.id_membre
