@@ -596,7 +596,7 @@ elseif( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
+								<a href="?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a> 
 								<a href="?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">

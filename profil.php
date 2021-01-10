@@ -107,7 +107,7 @@ if( adminConnect()){
 						// debug($valeur);
 						
 						if( $indice == 'photo' ){ 
-							$content .= "<td><img src='$valeur' width='50'></td>";
+							$content .= "<td><img src='$valeur' width='50' alt='" . $ligne['titre'] . " - Annonceo'></td>";
 						}
 						elseif($indice == 'id_annonce'){
 							$content .= "";
@@ -120,7 +120,7 @@ if( adminConnect()){
 						}
 					}
 					$content .= '<td class="text-center">
-									<a href="deposer_annonce.php?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
+									<a href="deposer_annonce.php?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 										<i class="far fa-trash-alt"></i>
 									</a> 
 									<a href="deposer_annonce.php?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">
@@ -222,7 +222,7 @@ if( !$_GET ){
 				foreach( $ligne as $indice => $valeur ){
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 					if( $indice == 'photo' ){ 
-						$content .= "<td><img src='$valeur' width='50'></td>";
+						$content .= "<td><img src='$valeur' width='50' alt='" . $ligne['titre'] . " - Annonceo'></td>";
                     }
                     elseif($indice == 'id_annonce'){
                         $content .= "";
@@ -235,7 +235,7 @@ if( !$_GET ){
 					}
 				}
 				$content .= '<td class="text-center">
-								<a href="deposer_annonce.php?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
+								<a href="deposer_annonce.php?action=suppression&id_annonce='. $ligne['id_annonce'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
 								</a> 
 								<a href="deposer_annonce.php?action=modification&id_annonce='. $ligne['id_annonce'] .'" title="Modifier">
@@ -248,14 +248,12 @@ if( !$_GET ){
 			$content .= '</tr></tbody>';
 		}
 	$content .= '</table>';
-	
-	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
 
-	// On voit si le membre a publié des annonces
-	/* $r = execute_requete(" SELECT id_annonce 
-							FROM annonce
-							WHERE membre_id_membre = '$id_membre_en_ligne' 
-	"); */
+	// Affichage des commentaires auxquels le membre connecté n'a pas répondu.
+
+	// On récupère son id
+	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
+	debug($id_membre_en_ligne);
 
 	// On voit d'abord la date du dernier message posté par le membre en ligne sur une de ses annonces
 	$s = execute_requete(" SELECT c.date_enregistrement AS date_commentaire
@@ -267,9 +265,10 @@ if( !$_GET ){
 	");
 	// Notice: Trying to access array offset on value of type bool in C:\MAMP\htdocs\PHP\00-Annonceo_V1.0\profil.php on line 268
 
-
+	// echo 'coucou';
 	if( $s->rowCount() >= 1 ){
 		// S'il y a au moins une annonce, on recherche les commentaires des annonces dont il est l'auteur publiés après son dernier message
+		// echo 'coucou';
 		
 		$date_dernier_commentaire_membre_en_ligne = $s->fetch(PDO::FETCH_ASSOC)['date_commentaire'];
 		// debug($date_dernier_commentaire_membre_en_ligne);

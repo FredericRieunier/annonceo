@@ -152,6 +152,8 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$photo1_bdd = add_photo_to_bdd($nom_photo1);
 		copy_photo($nom_photo1, 'photo1');
 
+		// debug($nom_photo1);
+
 		$nom_photo2 = name_photo('photo2');
 		$photo2_bdd = add_photo_to_bdd($nom_photo2);
 		copy_photo($nom_photo2, 'photo2');
@@ -169,6 +171,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		copy_photo($nom_photo5, 'photo5');
 
 		$photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo1;
+		// debug($photo_dossier);
 
 		// Si les champs de photos 2 à 5 sont vides, on réinitialise le chemin d'accès
 		// if(empty($nom_photo2)){ $photo2_bdd = ''; }
@@ -199,7 +202,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		// Renommage des photos pour qu'elles aient un identifiant en préfixe correspondant à l'id_photo
 		$last_id_photo = $pdo->lastInsertId();
 
-		// Chemin local complet (avec nom de fichier sans préfixe) :
+		/* // Chemin local complet (avec nom de fichier sans préfixe) :
 		$current_photo1_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo1;
 		$current_photo2_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo2;
 		$current_photo3_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo3;
@@ -228,7 +231,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 								photo5 = '$new_photo5_bdd'
 								
 							WHERE id_photo = '$last_id_photo'
-								");
+								"); */
 
 	}
 	// elseif( isset($_GET['action']) && !$_GET['action'] == 'ajout' ){
@@ -299,7 +302,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 			// Renommage des photos pour qu'elles aient un identifiant en préfixe correspondant à l'id_photo
 			$last_id_photo = $pdo->lastInsertId();
 	
-			// Chemin local complet (avec nom de fichier sans préfixe) :
+			/* // Chemin local complet (avec nom de fichier sans préfixe) :
 			$current_photo1_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo1;
 			$current_photo2_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo2;
 			$current_photo3_bdd = DOSSIER_PHOTO_LOCAL . $nom_photo3;
@@ -336,7 +339,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 												WHERE id_annonce = '$_GET[id_annonce]'			
 			");
 			$pdostatement->bindValue(':photo', $new_photo1_bdd, PDO::PARAM_STR);
-			$pdostatement->execute();
+			$pdostatement->execute(); */
 
 		}
 		// Fin modif table photo		
@@ -418,7 +421,7 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$pdostatement->bindValue(':description_courte', $description_courte, PDO::PARAM_STR);
 		$pdostatement->bindValue(':description_longue', $description_longue, PDO::PARAM_STR);
 		$pdostatement->bindValue(':prix', $prix, PDO::PARAM_STR);
-		$pdostatement->bindValue(':photo', $new_photo1_bdd, PDO::PARAM_STR);
+		$pdostatement->bindValue(':photo', $photo1_bdd, PDO::PARAM_STR);
 		$pdostatement->bindValue(':pays', $pays, PDO::PARAM_STR);
 		$pdostatement->bindValue(':ville', $ville, PDO::PARAM_STR);
 		$pdostatement->bindValue(':adresse', $adresse, PDO::PARAM_STR);
@@ -428,11 +431,12 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		$pdostatement->bindValue(':photo_id_photo', $last_id_photo, PDO::PARAM_STR);
         $pdostatement->execute();
         
-        $id_last_annonce = $pdo->lastInsertId();
+		$id_last_annonce = $pdo->lastInsertId();
+		// debug($photo1_bdd);
 
 		//redirection vers l'affichage :
-		header("location:fiche_annonce.php?id_annonce=$id_last_annonce");
-		exit();
+		// header("location:fiche_annonce.php?id_annonce=$id_last_annonce");
+		// exit();
 
 	}
 }
@@ -554,8 +558,6 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		}
 	$content .= '</table>';
 } */
-
-// XXXX
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------

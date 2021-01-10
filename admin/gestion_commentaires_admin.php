@@ -116,13 +116,13 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
                         }
                     }
                     $content .= '<td class="text-center">
-                                    <a href="?action=suppression&id_commentaire='. $ligne['id_commentaire'] .'" onclick="return( confirm(\'En etes vous certain ?\') )" title="Supprimer">
+                                    <a href="?action=suppression&id_commentaire='. $ligne['id_commentaire'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
                                         <i class="far fa-trash-alt"></i>
                                     </a> 
                                     <a href="?action=modification&id_commentaire='. $ligne['id_commentaire'] .'" title="Modifier">
                                         <i class="far fa-edit"></i>
                                     </a><br>
-                                    <a href="../fiche_annonce.php?id_commentaire='. $ligne['id_commentaire'] .'" title="Afficher">
+                                    <a href="../fiche_annonce.php?id_annonce='. $ligne['id_annonce'] .'" title="Afficher">
                                         <i class="fas fa-search"></i>
                                     </a>	
                                 </td>';

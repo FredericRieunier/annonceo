@@ -16,10 +16,12 @@
     } */
 
     // $pdostatement = execute_requete(" INSERT INTO photo(photo1) VALUES('124') ");
-    $id_de_photo = $pdo->lastInsertId();
-    debug($id_de_photo);
+    
 
-
+    
+    if(!empty( $_FILES) ){
+        copy($_FILES['photo1']['tmp_name'], '/home/users9/s/sjh2670/www/annonceo/img/nom_de_photo.jpg');
+    }
 
     
 ?>
@@ -34,11 +36,9 @@
         <?= $error; ?>
         <?= $content; ?>
 
-<form action="" method="post">
-        <label>Nom</label>
-        <input type="text" name="nom" class="form-control" value="<?= $nomValue; ?>"><br>
-        <label>Prénom</label>
-        <input type="text" name="prenom" class="form-control" value="<?= $prenomValue; ?>"><br>
+<form method="post" enctype="multipart/form-data">
+        <label>Photo 1</label><br>
+	    <input type="file" name="photo1">
         <input type="submit" class="btn btn-secondary">
 </form>
 

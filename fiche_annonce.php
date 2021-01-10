@@ -41,7 +41,7 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 	}
 	else{
 		$content .= "<h2>$titreCat</h2>";
-		$content .= "<p><img src='$photo' width='200'></p>";
+		$content .= "<p><img src='$photo' width='200' alt='" . $annonce['titre'] . "'></p>";
 		$content .= "<h3>$prix €</h3>";
 		if( !empty($description_longue) ){
 			$content .= "<p><strong>Description :</strong><br> $description_longue</p>";
@@ -57,8 +57,6 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 		$content .= "<p><strong>Vendeur/Vendeuse :</strong><br>$pseudo <br>Note moyenne : $note_moyenne/5</p>";
 		$content .= "<a href='contacter_membre.php?id_membre=" . $id_membre . "'><p style='background-color:green; color:white; max-width: 200px;'>Contacter $pseudo</p></a>";
 		$content .= "<p><strong>Adresse :</strong><br>$adresse <br>$cp $ville <br> $pays</p>";
-
-		$content .= "<p>Ajouter date de publication (faire fonction pour mettre au bon format), note du vendeur, affichage des commentaires, ajout de lightbox ou autre syst (sous réserve que l'user soit connecté : formulaire, sinon : 'se connecter pour noter, commenter, contacter' pour noter le vendeur, commenter l'annonce, bouton vert pour le contacter.</p>";
 
 		// Affichage des commentaires
 		$comments = '';

@@ -1,7 +1,7 @@
 <?php require_once "inc/header.inc.php"; ?>
 
 <?php
-
+// debug($_SERVER['DOCUMENT_ROOT']);
 
 
 // Affichage dans le select des catégories
@@ -132,7 +132,7 @@ if( isset($_POST['search']) && !empty($_POST) ){
           $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
             $content .= '<div class="row encart_annonce">';
               $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
-                $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
+                $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt='" . $annonces_en_stock['titre'] . " - Annonceo'>";
               $content .= '</div>';
               $content .= '<div class="col-6 col-sm-9">';
                 $content .= "<h3>$annonces_en_stock[titre]</h3>";
@@ -194,7 +194,7 @@ elseif(empty($_POST)){     //Affichage standard d'index.php
     $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
       $content .= '<div class="row encart_annonce">';
         $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
-          $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
+          $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt='" . $annonces_en_stock['titre'] . " - Annonceo'>";
         $content .= '</div>';
         $content .= '<div class="col-6 col-sm-9">';
           $content .= "<h3>$annonces_en_stock[titre]</h3>";
@@ -271,7 +271,7 @@ else{ //Il y a qqch dans le $_POST
           $content .= '<div><a href="fiche_annonce.php?id_annonce=' . $annonces_en_stock['id_annonce'] . '">';
             $content .= '<div class="row encart_annonce">';
               $content .= '<div class="col-6 col-sm-3 pl-0 pr-0">';
-                $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt=''>";
+                $content .= "<img src='" . $annonces_en_stock['photo'] . "' class='' alt='" . $annonces_en_stock['titre'] . " - Annonceo'>";
               $content .= '</div>';
               $content .= '<div class="col-6 col-sm-9">';
                 $content .= "<h3>$annonces_en_stock[titre]</h3>";
@@ -324,31 +324,31 @@ else{ //Il y a qqch dans le $_POST
 <!-- A MODIFIER -->
     <meta
       name="description"
-      content="En plein Paris, au 1, avenue Montaigne, dans le 8e arrondissement, le Parimis propose une nouvelle idée du chic à la française."
+      content="Annonceo vous aide à revendre voitures, appartements, vêtements ou à en acheter d'occasion, en proposant le meilleur des petites annonces en ligne."
     />
     <meta
       name="keywords"
-      content="hôtel de luxe Paris, Paris 8e arrondissement, spa 8e arrondissement, Paris 8e, Parimis"
+      content="petites annonces en ligne, achat vêtements d'occasion, vente vêtements d'occasion, vente véhicules d'occasion, vente appartements d'occasion"
     />
 
     <!-- BALISES OG RÉSEAUX SOCIAUX -->
-    <meta property="og:site_name" content="Hôtel cinq étoiles Parimis Paris" />
+    <meta property="og:site_name" content="Annonceo | Le meilleur des petites annonces en ligne" />
     <meta
       property="og:title"
-      content="Accès | Hôtel cinq étoiles Paris | spa | Parimis Paris"
+      content="Accueil | Annonceo, le meilleur des petites annonces en ligne"
     />
     <meta property="og:type" content="website" />
     <meta
       property="og:url"
-      content="https://hotel-parimis.fredericrieunier.fr/acces.html"
+      content="https://annonceo.fredericrieunier.fr"
     />
     <meta
       property="og:image"
-      content="https://hotel-parimis.fredericrieunier.fr/img/toits-paris-2-500.jpg"
+      content="https://annonceo.fredericrieunier.fr/img/annonceo_logo_v1.png"
     />
     <meta
       property="og:description"
-      content="En plein Paris, au 1, avenue Montaigne, dans le 8e arrondissement, le Parimis propose une nouvelle idée du chic à la française."
+      content="Annonceo vous aide à revendre voitures, appartements, vêtements ou à en acheter d'occasion, en proposant le meilleur des petites annonces en ligne."
     />
 
     <title>Accueil | Annonceo, le meilleur des annonces en ligne</title>

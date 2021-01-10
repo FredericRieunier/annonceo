@@ -86,7 +86,10 @@ function copy_photo($nom_photo, $numero_photo){
 
     if(!empty($nom_photo)){
     //Où on place le fichier de la photo
-    $photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo;
+    // Version locale :
+    // $photo_dossier = DOSSIER_PHOTO_LOCAL . $nom_photo;
+    // Version en ligne : 
+    $photo_dossier = '/home/users9/s/sjh2670/www/annonceo/img/' . $nom_photo;
     
     //Enregistrement de la photo dans le dossier 'img'
     copy( $_FILES[$numero_photo]['tmp_name'], $photo_dossier );
@@ -108,7 +111,12 @@ function rename_photo($nom_photo, $new_photo_bdd, $current_photo_bdd){
     else{ rename($current_photo_bdd, $new_photo_bdd); }
 
     // return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'img/', $new_photo_bdd );
-    return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'http://localhost', $new_photo_bdd );
+    // Version locale :
+    // return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'http://localhost', $new_photo_bdd );
+    // Version en ligne :
+    return str_replace(  $_SERVER['DOCUMENT_ROOT'], 'img/', $new_photo_bdd );
+
+    
 }
 
 // Supprimer un fichier de photo
