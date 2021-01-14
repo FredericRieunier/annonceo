@@ -55,6 +55,7 @@
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_membres.php">Gestion des membres</a>
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_categories.php?action=affichage">Gestion des catégories</a>
           <a class="dropdown-item" href="<?= URL ?>admin/gestion_commentaires_admin.php?action=affichage">Gestion des commentaires</a>
+          <a class="dropdown-item" href="<?= URL ?>admin/gestion_notes.php?action=affichage">Gestion des notes</a>
           <a class="dropdown-item" href="<?= URL ?>admin/statistiques.php">Statistiques</a>          
         </div> 
         </li> 

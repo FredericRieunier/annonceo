@@ -435,8 +435,8 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 		// debug($photo1_bdd);
 
 		//redirection vers l'affichage :
-		// header("location:fiche_annonce.php?id_annonce=$id_last_annonce");
-		// exit();
+		header("location:fiche_annonce.php?id_annonce=$id_last_annonce");
+		exit();
 
 	}
 }

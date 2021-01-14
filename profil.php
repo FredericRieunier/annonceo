@@ -41,6 +41,15 @@ if( adminConnect()){
         <p><strong>Téléphone&nbsp;: </strong> $telephone</p>
         <p><strong>E-mail&nbsp;: </strong> $email</p>
 		<p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
+
+		$r = execute_requete(" SELECT avis FROM note WHERE membre_id_membre1 = $id_membre ");
+		if($r->rowCount() >= 1){
+			$content .= "<p><strong>Avis sur le membre&nbsp;: </strong></p>";
+			while($avis_sur_le_membre = $r->fetch(PDO::FETCH_ASSOC)){
+				$content .= "<p>$avis_sur_le_membre[avis]</p>";
+	
+			}
+		}
 		
 		
     }
@@ -168,7 +177,19 @@ if( !$_GET ){
             <p><strong>Nom&nbsp;: </strong> $nom</p>
             <p><strong>Téléphone&nbsp;: </strong> $telephone</p>
             <p><strong>E-mail&nbsp;: </strong> $email</p>
-            <p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
+			<p><strong>Civilité&nbsp;: </strong>" . civilite() . "</p>";
+			
+	// Affichage des avis
+	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
+
+	$r = execute_requete(" SELECT avis FROM note WHERE membre_id_membre1 = $id_membre_en_ligne ");
+	if($r->rowCount() >= 1){
+		$content .= "<p><strong>Avis sur le membre&nbsp;: </strong></p>";
+		while($avis_sur_le_membre = $r->fetch(PDO::FETCH_ASSOC)){
+			$content .= "<p>$avis_sur_le_membre[avis]</p>";
+
+		}
+	}
 
 
     // Affichage de la liste des annonces publiées par le membre
@@ -253,7 +274,7 @@ if( !$_GET ){
 
 	// On récupère son id
 	$id_membre_en_ligne = $_SESSION['membre']['id_membre'];
-	debug($id_membre_en_ligne);
+	// debug($id_membre_en_ligne);
 
 	// On voit d'abord la date du dernier message posté par le membre en ligne sur une de ses annonces
 	$s = execute_requete(" SELECT c.date_enregistrement AS date_commentaire
@@ -266,7 +287,7 @@ if( !$_GET ){
 	// Notice: Trying to access array offset on value of type bool in C:\MAMP\htdocs\PHP\00-Annonceo_V1.0\profil.php on line 268
 
 	// echo 'coucou';
-	if( $s->rowCount() >= 1 ){
+	// if( 1= 1 ){
 		// S'il y a au moins une annonce, on recherche les commentaires des annonces dont il est l'auteur publiés après son dernier message
 		// echo 'coucou';
 		
@@ -301,7 +322,7 @@ if( !$_GET ){
 
 			$content .= "</table>";
 		}
-	}
+	// }
 
 	
     
