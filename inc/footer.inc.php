@@ -1,9 +1,9 @@
 </main>
 
 <footer>
-	<p><a href="<?= URL ?>contact.php">Nous contacter</a></p>
-    <p><a href="">Mentions légales</a></p>
-	<p><a href="">Conditions générales de vente</a></p>
+	<p><a href="<?= URL ?>index.php"> <img src="<?= URL ?>img/annonceo_logo_v1.png" alt="Logo d'Annonceo" style="width:120px;">
+  	</a></p>
+	<p><a href="<?= URL ?>contact.php">Nous contacter</a> | <a href="<?= URL ?>mentions_legales.php">Mentions légales</a> | <a href="cgv.php">Conditions générales de vente</a></p>
 </footer>
     
     <!-- CDN JQUERY -->

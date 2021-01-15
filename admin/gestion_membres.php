@@ -118,8 +118,14 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 			$content .= '<tr>';
 
 				foreach( $ligne as $indice => $valeur ){
-
-					if($indice != 'mdp'){
+					if($indice == "date_enregistrement"){
+						// On met la date à un format correct
+						list($date, $time) = explode(" ", $valeur);
+						list($year, $month, $day) = explode("-", $date);
+						$date_enregistrement = "$day/$month/$year";
+                        $content .= "<td>$date_enregistrement</td>";
+					}
+					elseif($indice != 'mdp'){
 						$content .= "<td> $valeur </td>";
 					}
 				}

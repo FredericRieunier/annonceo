@@ -138,7 +138,7 @@ else{
         empty($pseudo) || empty($mdp) || empty($nom) || empty($prenom) || empty($telephone) || empty($email) || empty($civilite) 
         || strlen($pseudo) > 20 || strlen($nom) > 20 || strlen($prenom) > 20 || strlen($mdp) > 60 || strlen($email) > 50 
         || !(preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email))
-        || !(preg_match("#^0[1-68]([-. ]?[0-9]{2}){4}$#", $telephone))
+        || !(preg_match("#^0[1-9]([-. ]?[0-9]{2}){4}$#", $telephone))
         || stristr($_POST['pseudo'], '\'') || stristr($_POST['pseudo'], '\"') || stristr($_POST['mdp'], '\'') || stristr($_POST['mdp'], '\"') || stristr($_POST['pseudo'], '\\') || stristr($_POST['mdp'], '\\')
         ){
             $error .= "<div class='alert alert-warning'>Il y a eu une erreur. Veuillez vérifier que tous les champs sont remplis et correspondent aux formats suivants&nbsp;: 

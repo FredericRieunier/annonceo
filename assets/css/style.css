@@ -1,6 +1,6 @@
 .encart_annonce{
     background-color: rgb(238, 238, 238);
-    box-shadow: 0.2rem 0.2rem 0.9rem rgba(128, 128, 128, 0.493);
+    box-shadow: 0 0 0.2rem rgba(128, 128, 128, 0.493);
     margin-bottom: 2rem;
 }
 
@@ -8,10 +8,37 @@
     max-width: 100%;
 }
 
-/* .encart_annonce{
-    color: black;
-} */
+a .encart_annonce{
+    color: black !important;
+}
 
 .encart_annonce:hover p{
     text-decoration: none;
+}
+
+/* Footer */
+footer{
+    padding-top: 1rem;
+    margin-top: 1rem;
+    padding-bottom: 2rem;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    line-height: .8rem;
+    width: 100%;
+}
+
+footer a{
+    color: rgb(39, 39, 39);
+}
+
+h3{
+    padding-top: 1.5rem;
+}
+
+h1{
+    padding-top: 2rem;
+    padding-bottom: 3rem;
 }

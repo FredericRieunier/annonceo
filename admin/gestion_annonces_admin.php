@@ -584,8 +584,14 @@ elseif( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					}			
 					elseif( ($indice == 'id_membre') || ($indice == 'id_categorie') || ($indice == 'photo_id_photo') ){ 
 						// $content .= '<td>oui</td>';
-					}			
-					
+					}	
+					elseif($indice == 'date_enregistrement'){
+						// On met la date à un format correct
+						list($date, $time) = explode(" ", $valeur);
+						list($year, $month, $day) = explode("-", $date);
+						$date_enregistrement = "$day/$month/$year";
+                        $content .= "<td>$date_enregistrement</td>";
+                    }	
 					elseif( $indice == 'titreCat' ){
 						$content .= "<td> <a href='?action=affichage&id_categorie=" .$ligne['id_categorie'] . "'>" . $valeur . "</a></td>";
 					}

@@ -7,8 +7,6 @@ if(!userConnect()){
     exit();  
 }
 
-
-
 /* Affichage des différents profils pour l'admin s'il a cliqué sur la loupe dans gestion_membres */
 if( adminConnect()){
     if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
@@ -56,8 +54,7 @@ if( adminConnect()){
 
     /* Fin de l'affichage des différents profils pour l'admin */
 
-    // Ajout au profil de l'admin s'il a juste cliqué sur profil :
-
+    // Ajout au profil de l'admin la mention "Administrateur" s'il a juste cliqué sur profil :
     if( !$_GET ){
         $content .= '<h2 style="color: darkred;">Administrateur</h2>';
 	}
@@ -111,6 +108,10 @@ if( adminConnect()){
 
 					// On affiche les informations et la photo
 					foreach( $ligne as $indice => $valeur ){
+
+						list($date, $time) = explode(" ", $ligne['date_enregistrement']);
+						list($year, $month, $day) = explode("-", $date);
+						$date_enregistrement = "$day/$month/$year";
 						//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 						$valeur = stripcslashes($valeur);
 						// debug($valeur);
@@ -121,6 +122,11 @@ if( adminConnect()){
 						elseif($indice == 'id_annonce'){
 							$content .= "";
 						}
+						elseif($indice == 'date_enregistrement'){
+
+							$content .= "<td>$date_enregistrement</td>";
+						}
+						
 						
 						//Sinon, on affiche juste la valeur
 						else{ 
@@ -210,9 +216,10 @@ if( !$_GET ){
 	// On affiche le tableau des annonces
 	$content .= '<table border="2" cellpadding="5" id="table_id">';
 		$content .= '<thead><tr>';
-			for( $i = 0; $i < $r->columnCount(); $i++ ){
+			for( $i = 0; $i < $r->columnCount(); $i++ ){				
 				$colonne = $r->getColumnMeta( $i );
 				// debug($colonne['name']);
+
 				if($colonne['name'] == 'membre_id_membre'){
 					$content .= "<th>Membre auteur</th>";
                 }
@@ -240,15 +247,25 @@ if( !$_GET ){
 				//debug( $ligne );
 
 				// On affiche les informations et la photo
+				// debug($date_enregistrement);
+				
 				foreach( $ligne as $indice => $valeur ){
+					
 					//Si l'index du tableau '$ligne' est égal à 'photo', on affiche une cellule avec une balise <img>
 					if( $indice == 'photo' ){ 
 						$content .= "<td><img src='$valeur' width='50' alt='" . $ligne['titre'] . " - Annonceo'></td>";
                     }
                     elseif($indice == 'id_annonce'){
                         $content .= "";
-                    }
+					}
 					
+					elseif($indice == 'date_enregistrement'){
+						// On met la date à un format correct
+						list($date, $time) = explode(" ", $valeur);
+						list($year, $month, $day) = explode("-", $date);
+						$date_enregistrement = "$day/$month/$year";
+                        $content .= "<td>$date_enregistrement</td>";
+                    }
 					//Sinon, on affiche juste la valeur
 					else{ 
 

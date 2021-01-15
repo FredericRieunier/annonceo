@@ -16,7 +16,8 @@ $r = execute_requete(" SELECT ROUND(AVG(n.note), 1) AS note_avg, COUNT(n.note) A
 $afficher_meilleures_notes = ''; 
 $i = 0;
 while( $meilleures_notes = $r->fetch(PDO::FETCH_ASSOC) ){
-    $afficher_meilleures_notes .= "<p><div>" . ($i+1) . " - $meilleures_notes[prenom] $meilleures_notes[nom]</div> <div style='text-align: right;'>$meilleures_notes[note_avg]/5 pour $meilleures_notes[note_count] avis</div></p>";
+    $afficher_meilleures_notes .= "<div class='row'><div class='col-6'>" . ($i+1) . " - $meilleures_notes[prenom] $meilleures_notes[nom]</div>";
+    $afficher_meilleures_notes .=  "<div class='col-6'>$meilleures_notes[note_avg]/5 pour $meilleures_notes[note_count] avis</div></div>";
     $i = $i+1;
 }
 
@@ -31,7 +32,8 @@ $r = execute_requete(" SELECT m.prenom, m.nom, COUNT(a.id_annonce) AS nombre_ann
 $afficher_membres_actifs = '';
 $i = 0;
 while( $membres_actifs = $r->fetch(PDO::FETCH_ASSOC) ){
-    $afficher_membres_actifs .= "<p><div>" . ($i+1) . " - $membres_actifs[prenom] $membres_actifs[nom] </div><div style='text-align:right;'> $membres_actifs[nombre_annonces] annonce(s) publiée(s) </div>";
+    $afficher_membres_actifs .= "<div class='row'><div class='col-6'>" . ($i+1) . " - $membres_actifs[prenom] $membres_actifs[nom] </div>";
+    $afficher_membres_actifs .= "<div class='col-6'> $membres_actifs[nombre_annonces] annonce(s) publiée(s) </div></div>";
     $i = $i+1;
 }
 
@@ -42,7 +44,12 @@ $r = execute_requete(" SELECT titre, date_enregistrement FROM annonce ORDER BY d
 $afficher_annonces_anciennes = '';
 $i = 0;
 while( $annonces_anciennes = $r->fetch(PDO::FETCH_ASSOC) ){
-    $afficher_annonces_anciennes .= "<p><div>" . ($i+1) . " - $annonces_anciennes[titre]</div> <div style='text-align: right;'>$annonces_anciennes[date_enregistrement]</div></p>";
+    list($date, $time) = explode(" ", $annonces_anciennes['date_enregistrement']);
+    list($year, $month, $day) = explode("-", $date);
+    $date_enregistrement = "$day/$month/$year";
+
+    $afficher_annonces_anciennes .= "<div class='row'><div class='col-6'>" . ($i+1) . " - $annonces_anciennes[titre]</div>";
+    $afficher_annonces_anciennes .= "<div class='col-6'>$date_enregistrement</div></div>";
     $i = $i+1;
 }
 
@@ -57,7 +64,8 @@ $r = execute_requete(" SELECT COUNT(a.id_annonce) AS nombre_annonces, c.titreCat
 $afficher_nombre_annonces_par_categorie = '';
 $i= 0;
 while( $nombre_annonces_par_categorie = $r->fetch(PDO::FETCH_ASSOC) ){
-    $afficher_nombre_annonces_par_categorie .= "<p><div>" . ($i+1) . " - $nombre_annonces_par_categorie[titreCat]</div> <div style='text-align: right;'>$nombre_annonces_par_categorie[nombre_annonces] annonce(s)</div></p>";
+    $afficher_nombre_annonces_par_categorie .= "<div class='row'><div class='col-6'>" . ($i+1) . " - $nombre_annonces_par_categorie[titreCat]</div>";
+    $afficher_nombre_annonces_par_categorie .=  "<div class='col-6'>$nombre_annonces_par_categorie[nombre_annonces] annonce(s)</div></div>";
     $i = $i+1;
 }
 
@@ -76,23 +84,24 @@ while( $nombre_annonces_par_categorie = $r->fetch(PDO::FETCH_ASSOC) ){
         <?= $content; ?>
 
 
-    <section class="top5">
+    <section class="top5 container-fluid">
         <h3>Top 5 des membres les mieux notés</h3>
         <?= $afficher_meilleures_notes; ?>
     </section>
 
-    <section class="top5">
-        <h3>Top 5 des membres les plus actifs (ayant posté le plus d'annonces)</h3>
+    <section class="top5 container-fluid">
+        <h3>Top 5 des membres les plus actifs</h3>
+        <p>(ayant posté le plus d'annonces)</p>
         <?= $afficher_membres_actifs; ?>
     </section>
 
-    <section class="top5">
+    <section class="top5 container-fluid">
         <h3>Top 5 des annonces les plus anciennes</h3>
         <?= $afficher_annonces_anciennes; ?>
     </section>
 
-    <section class="top5">
-        <h3>Top 5 des des catégories contenant le plus d'annonces</h3>
+    <section class="top5 container-fluid">
+        <h3>Top 5 des catégories contenant le plus d'annonces</h3>
         <?= $afficher_nombre_annonces_par_categorie; ?>
     </section>
 

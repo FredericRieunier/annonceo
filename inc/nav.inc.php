@@ -81,4 +81,4 @@
 
 
 
-<main class="container-fluid">
+<main class="container">

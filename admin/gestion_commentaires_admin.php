@@ -110,6 +110,13 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
                         elseif( $indice == 'avis' ){
                             $content .= "<td> $valeur </td>";;
                         }
+                        elseif($indice == "date_enregistrement"){
+                            // On met la date à un format correct
+                            list($date, $time) = explode(" ", $valeur);
+                            list($year, $month, $day) = explode("-", $date);
+                            $date_enregistrement = "$day/$month/$year";
+                            $content .= "<td>$date_enregistrement</td>";
+                        }
                         //Sinon, on affiche juste la valeur
                         else{ 
                             $content .= "<td> $valeur </td>";
