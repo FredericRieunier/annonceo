@@ -116,19 +116,13 @@ if( isset($_POST['search']) && !empty($_POST) ){
   foreach($recherche as $indice => $valeur){
     // On élimine les principaux articles de la recherche
     if($valeur != "le" && $valeur != "la" && $valeur != "en" && $valeur != "de" && $valeur != "du" && $valeur != "au"){
-      $new_search = "OR a.titre LIKE '%$valeur%'";
+      $new_search = "OR a.titre LIKE '%$valeur%' OR a.description_courte LIKE '%$valeur%' ";
       array_push($search_sql, $new_search);
     }
   }
   $search_sql = implode($search_sql, ' ');
   // debug($search_sql);
   
-  
-  // foreach($recherche as $indice => $valeur){
-  
-    // On élimine les principaux articles de la recherche
-    // if($valeur != "le" && $valeur != "la"){
-
       $r = execute_requete(" SELECT DISTINCT a.*
                             FROM annonce a
                             WHERE 1 = 0 $search_sql 
@@ -176,6 +170,9 @@ elseif(empty($_POST)){     //Affichage standard d'index.php
   FROM annonce
   ORDER BY date_enregistrement DESC
   ");
+
+  $nombre_annonces = $r->rowCount();
+  $content .= "<p class='alert alert-secondary'><strong>Il y a $nombre_annonces annonces en ligne actuellement.</strong></p>";
 
   while( $annonces_en_stock = $r->fetch( PDO::FETCH_ASSOC ) ){
     foreach($annonces_en_stock as $indice => $valeur){

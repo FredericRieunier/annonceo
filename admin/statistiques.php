@@ -58,7 +58,7 @@ $r = execute_requete(" SELECT COUNT(a.id_annonce) AS nombre_annonces, c.titreCat
                         FROM annonce a, categorie c
                         WHERE a.categorie_id_categorie = c.id_categorie
                         GROUP BY c.titreCat
-                        ORDER BY nombre_annonces DESC 
+                        ORDER BY nombre_annonces DESC LIMIT 5
 ");
 
 $afficher_nombre_annonces_par_categorie = '';

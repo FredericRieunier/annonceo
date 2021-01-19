@@ -209,7 +209,7 @@ else{
         <input type="text" name="nom" class="form-control" value="<?= $nomValue; ?>"><br>
 
         <label>Prénom</label>
-        <input type="text" name="prenom" class="form-control"value="<?= $prenomValue; ?>"><br>
+        <input type="text" name="prenom" class="form-control" value="<?= $prenomValue; ?>"><br>
 
         <label>Téléphone</label>
         <input type="text" name="telephone" class="form-control" value="<?= $telephoneValue; ?>"><br>

@@ -19,7 +19,7 @@ if( isset($_GET['id_annonce']) ){ //S'il existe 'id_annonce' dans l'URL, c'est q
 
 
 
-	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
+	$r = execute_requete(" SELECT a.id_annonce, a.titre, a.description_courte, a.description_longue, a.prix, a.photo, a.pays, a.ville, a.adresse, a.cp, 
 	m.pseudo, m.email, m.id_membre, c.titreCat, a.date_enregistrement 
 	FROM annonce a, membre m, categorie c
 	WHERE a.id_annonce = '$_GET[id_annonce]'

@@ -600,13 +600,13 @@ if( !empty( $_POST ) && isset($_GET['action']) && ($_GET['action'] == 'ajout' ||
 
 	//conditions pour vérifier l'existence des variables :
    
-	$titre_value = ( isset($annonce_actuelle['titre']) ) ? $annonce_actuelle['titre'] : '';
-	$description_courte_value = ( isset($annonce_actuelle['description_courte']) ) ? $annonce_actuelle['description_courte'] : '';
-	$description_longue_value = ( isset($annonce_actuelle['description_longue']) ) ? $annonce_actuelle['description_longue'] : '';
+	$titre_value = stripcslashes( ( isset($annonce_actuelle['titre']) ) ? $annonce_actuelle['titre'] : '' );
+	$description_courte_value = stripcslashes( ( isset($annonce_actuelle['description_courte']) ) ? $annonce_actuelle['description_courte'] : '' );
+	$description_longue_value = stripcslashes( ( isset($annonce_actuelle['description_longue']) ) ? $annonce_actuelle['description_longue'] : '' );
 	$prix_value = ( isset($annonce_actuelle['prix']) ) ? $annonce_actuelle['prix'] : '';
-	$pays_value = ( isset($annonce_actuelle['pays']) ) ? $annonce_actuelle['pays'] : '';
-	$ville_value = ( isset($annonce_actuelle['ville']) ) ? $annonce_actuelle['ville'] : '';
-	$adresse_value = ( isset($annonce_actuelle['adresse']) ) ? $annonce_actuelle['adresse'] : '';
+	$pays_value = stripcslashes( ( isset($annonce_actuelle['pays']) ) ? $annonce_actuelle['pays'] : '' );
+	$ville_value = stripcslashes( ( isset($annonce_actuelle['ville']) ) ? $annonce_actuelle['ville'] : '' );
+	$adresse_value = stripcslashes( ( isset($annonce_actuelle['adresse']) ) ? $annonce_actuelle['adresse'] : '' );
 	$cp_value = ( isset($annonce_actuelle['cp']) ) ? $annonce_actuelle['cp'] : '';
 
 	// Gestion des photos

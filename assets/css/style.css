@@ -11,10 +11,11 @@
 a .encart_annonce{
     color: black !important;
 }
-
-.encart_annonce:hover p{
-    text-decoration: none;
+a .encart_annonce:hover{
+    color: rgb(56, 111, 173) !important;
+    text-decoration-color: rgb(168, 107, 79) !important;
 }
+
 
 /* Footer */
 footer{
@@ -28,6 +29,7 @@ footer{
     flex-direction: column;
     line-height: .8rem;
     width: 100%;
+    text-align: center;
 }
 
 footer a{
@@ -41,4 +43,27 @@ h3{
 h1{
     padding-top: 2rem;
     padding-bottom: 3rem;
+}
+
+nav li a{
+    color: rgb(168, 107, 79) !important;
+    font-size: 1.2rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+footer a{
+    color: rgb(168, 107, 79) !important;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+footer a:hover{
+    color: rgb(228, 116, 64) !important;
+}
+
+nav li a:hover{
+    color: rgb(228, 116, 64) !important;
+}
+
+.encart_annonce h3{
+    padding-top: .5rem;
 }

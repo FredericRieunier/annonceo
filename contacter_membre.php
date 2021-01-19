@@ -35,13 +35,13 @@ else{ //SINON, on le redirige vers une page d'erreur
         <?= $content; ?>
 
         <form method="post">
-        <label for="expediteur">Votre mail :</label><br>
+        <label>Votre mail :</label><br>
         <input type="text" name="expediteur" class="form-control"><br><br>
 
-        <label for="sujet">Sujet</label><br>
+        <label>Sujet</label><br>
         <input type="text" name="sujet" class="form-control"><br><br>
 
-        <label for="message">Message</label><br>
+        <label>Message</label><br>
         <textarea name="message" cols="40" rows="5" class="form-control"></textarea><br><br>
 
         <input type="submit">

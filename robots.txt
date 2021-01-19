@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://annonceo.fredericrieunier.fr/sitemap.xml

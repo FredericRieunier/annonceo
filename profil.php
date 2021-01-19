@@ -48,8 +48,7 @@ if( adminConnect()){
 	
 			}
 		}
-		
-		
+
     }
 
     /* Fin de l'affichage des différents profils pour l'admin */
@@ -356,8 +355,11 @@ if( !$_GET ){
 
     <!-- <main class="container"> -->
         <h1>Profil</h1>
+		<!-- Ajout d'un lien pour ajouter une annonce -->
+	
         <?= $error; ?>
         <?= $content; ?>
+		<p><a href='<?= URL ?>deposer_annonce.php?action=ajout'>Déposer une annonce</a></p>
         
       
        

@@ -33,14 +33,13 @@ if( isset( $_GET['action'] ) && $_GET['action'] == 'suppression' ){
 		execute_requete(" DELETE FROM photo
 						WHERE id_photo = '$photo_membre[id_photo]'								
 		");
-
 	}
 	
+	execute_requete(" DELETE FROM annonce WHERE membre_id_membre = '$_GET[id_membre]' ");
 	execute_requete(" DELETE FROM membre
 						WHERE membre.id_membre = '$_GET[id_membre]'									
 	");
 
-	// execute_requete(" DELETE FROM annonce WHERE membre_id_membre = '$_GET[id_membre]' ");
     // execute_requete(" DELETE FROM membre WHERE id_membre = '$_GET[id_membre]' ");
     header('location:?action=affichage');
     exit();
@@ -109,9 +108,7 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 					$content .= "<th>$colonne[name]</th>";
 				}
 			}
-			$content .= '<th>Voir le profil</th>';
-			$content .= '<th>Suppression</th>';
-			$content .= '<th>Modification</th>';
+			$content .= '<th>Actions</th>';
 		$content .= '</tr>';
 
 		while( $ligne = $r->fetch( PDO::FETCH_ASSOC ) ){
@@ -125,6 +122,22 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 						$date_enregistrement = "$day/$month/$year";
                         $content .= "<td>$date_enregistrement</td>";
 					}
+					elseif($indice == "statut"){
+						if($valeur == 0){
+							$content .= "<td>Membre</td>";
+						}
+						else{
+							$content .= "<td>Admin</td>";
+						}
+					}
+					elseif($indice == "civilite"){
+						if($valeur == "m"){
+							$content .= "<td>Homme</td>";
+						}
+						else{
+							$content .= "<td>Femme</td>";
+						}
+					}
 					elseif($indice != 'mdp'){
 						$content .= "<td> $valeur </td>";
 					}
@@ -132,15 +145,11 @@ if( isset($_GET['action']) && $_GET['action'] == 'affichage' ){
 				$content .= '<td class="text-center">
 								<a href="../profil.php?action=affichage&id_membre='. $ligne['id_membre'] .'" title="Afficher">
 									<i class="fas fa-search"></i>
-								</a>	
-							</td>';
-				$content .= '<td class="text-center">
-								<a href="?action=suppression&id_membre='. $ligne['id_membre'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
+								</a>';
+				$content .= '<a href="?action=suppression&id_membre='. $ligne['id_membre'] .'" onclick="return( confirm(\'En êtes-vous certain ?\') )" title="Supprimer">
 									<i class="far fa-trash-alt"></i>
-								</a>	
-							</td>';
-				$content .= '<td class="text-center">
-								<a href="?action=modification&id_membre='. $ligne['id_membre'] .'" title="Modifier">
+								</a>';
+				$content .= '<a href="?action=modification&id_membre='. $ligne['id_membre'] .'" title="Modifier">
 									<i class="far fa-edit"></i>
 								</a>	
 							</td>';
